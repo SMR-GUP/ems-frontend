@@ -1,0 +1,7 @@
+.custom-border {
+    border: 2px solid black; /* Adjust the border style and color as needed */
+    width: 500px; /* Adjust the width as per your requirement */
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  }

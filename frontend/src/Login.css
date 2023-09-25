@@ -1,0 +1,66 @@
+/* Add this CSS to your existing styles or in a <style> tag */
+
+.login-container {
+  background-image: url('https://wallpapers.com/images/hd/candles-in-a-snowy-place-rkr2faj0xmefzxab.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width:1366px;
+  overflow: hidden;
+}
+
+  
+  .loginForm {
+   border: black;
+    background-color: #f3f3d6;
+    margin-right: 790px;
+   
+  }
+  
+  .loginForm h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .loginForm form {
+    padding: 20px;
+    
+  }
+  
+  .loginForm label {
+    font-weight: bold;
+    
+  }
+  
+  .loginForm input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #06040a;
+    border-radius: 0;
+    box-sizing: border-box;
+  }
+  
+  .loginForm button {
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .loginForm button:hover {
+    background-color: #218838;
+  }
+
+  
+  
+  .loginForm p {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
