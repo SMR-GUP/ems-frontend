@@ -12,7 +12,7 @@ function AddEmployee() {
 
             name:'',
             salary:'',
-            image:'',
+            // image:'',
             weekday:'',
             joiningDate:''
     });
@@ -42,15 +42,10 @@ function AddEmployee() {
 
     const handleSubmit =(event)=>{
         event.preventDefault();
-        const formdata=new FormData();
-        formdata.append("name",data.name);
-        formdata.append("salary",data.salary);
-        formdata.append("image",data.image);
-        formdata.append("weekday",data.weekday);
-        formdata.append("joiningDate",data.joiningDate);
+        console.log("Data entered  ",data);
 
 
-        axios.post('http://localhost:8081/create',formdata)
+        axios.post('http://localhost:8081/create',data)
         .then(res =>{
                 navigate('/employee')
         })
@@ -94,11 +89,11 @@ function AddEmployee() {
             onChange={e=>setData({...data,salary:e.target.value})}/>
         </div>
        
-        <div class="col-12 mb-3">
+        {/* <div class="col-12 mb-3">
             <label class="form-label" for="inputGroupFile01" autoComplete='off'>Select Image</label>
             <input type="file" class="form-control" id="inputGroupFile01"
             onChange={e=>setData({...data,image:e.target.files[0]})}/>
-        </div>
+        </div> */}
         
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Create</button>

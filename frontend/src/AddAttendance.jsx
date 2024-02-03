@@ -45,11 +45,10 @@ const AddAttendance = () => {
   }, [id]);
 
 
-
   return (
     <div>
         <br></br>
-        <h4 style={{color:'blueviolet'}} >Mark attendance for {employeeData.name}</h4>
+        <h4 style={{color:'blue',textAlign:'center'}} >Mark attendance for {employeeData.name}</h4>
     <div className="attendance-form">
       <h3>Record Attendance</h3>
       <form onSubmit={handleSubmit}>
@@ -72,7 +71,7 @@ const AddAttendance = () => {
             onChange={e=>setData({...data,month:e.target.value})}
             required
           >
-            
+            <option value="Select">Select</option>
             <option value="January">January</option>
             <option value="February">February</option>
             <option value="March">March</option>

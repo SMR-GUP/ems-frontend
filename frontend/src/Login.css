@@ -1,7 +1,7 @@
 /* Add this CSS to your existing styles or in a <style> tag */
 
 .login-container {
-  background-image: url('https://wallpapers.com/images/hd/candles-in-a-snowy-place-rkr2faj0xmefzxab.jpg');
+  background-image: url('https://d.newsweek.com/en/full/1933008/candles-surrounded-christmas-decorations.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -11,8 +11,7 @@
 
   
   .loginForm {
-   border: black;
-    background-color: #f3f3d6;
+    background-color: rgba(0, 0, 0, 0.4);
     margin-right: 790px;
    
   }
@@ -36,8 +35,8 @@
     width: 100%;
     padding: 8px;
     margin-bottom: 15px;
-    border: 1px solid #06040a;
-    border-radius: 0;
+    border: 1px solid #f4f3f5;
+    border-radius: 3px;
     box-sizing: border-box;
   }
   

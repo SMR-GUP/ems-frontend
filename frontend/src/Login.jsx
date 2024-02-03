@@ -33,22 +33,22 @@ axios.post('http://localhost:8081/login',values)
   return (
     <div className='login-container'>
     <div className='vh-100 d-flex justify-content-center align-items-center'>
-      <div className='p-3 rounded border loginForm' >
+      <div className='p-3 rounded loginForm' >
         <div className='text-danger'>
           {error && error}
         </div>
-        <h2 className="text-center">Login</h2>
+        <h2 className="text-center" style={{color:'white'}}>Login</h2>
         <form  onSubmit={handleSubmit}>
           <div className='mb-3' >
-            <label htmlFor="email"><strong>Email</strong></label>
-            <input type="email" placeholder='Enter Email' name='email' onChange={e => setValues({...values , email: e.target.value })} className='form-control rounded-0' autoComplete='off'/>
+            <label htmlFor="email" style={{color:'white'}}><>Admin</></label>
+            <input type="name" placeholder='Enter Admin Name' name='email' onChange={e => setValues({...values , email: e.target.value })} className='form-control rounded-0' autoComplete='off'/>
           </div>
           <div className='mb-3' >
-            <label htmlFor="password"><strong>Password</strong></label>
+            <label htmlFor="password" style={{color:'white'}}><>Password</></label>
             <input type="password" placeholder='Enter Password' name='password' onChange={e => setValues({...values ,password: e.target.value })} className='form-control rounded-0' />
           </div>
           <button type='submit' className='btn btn-success w-100 rounded-0'> Log in</button>
-          <p className="text-center mt-3">You agree to our terms and policies</p>
+          <p className="text-center mt-3" style={{color:'white'}}>You agree to our terms and policies</p>
         </form>
       </div>
     </div>

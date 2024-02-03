@@ -53,23 +53,23 @@ function Employee() {
                     <th>Joining Date </th>
                     <th>Day </th>
                     <th>Salary </th>
-                    <th>Image</th>
+                    {/* <th>Image</th> */}
                     <th>Actions</th>
 
                 </tr>
             </thead>
             <tbody>
     {data.map((employee, index) => {
-        const formattedDate = new Date(employee.date).toISOString().split('T')[0];
-        return (
+    const formattedDate = new Date(employee.date).toLocaleDateString();
+    return (
             <tr key={index}>
                 <td>{employee.name}</td>
                 <td>{formattedDate}</td> 
                 <td>{employee.day}</td>
                 <td>{employee.salary}</td>
-                <td>{
+                {/* <td>{
                     <img src={`http://localhost:8081/images/`+employee.image } alt="" className='employee_image'/>
-                    }</td>
+                    }</td> */}
                 <td>
                 <Link 
   to={`/employeeEdit/${employee.id}`} 

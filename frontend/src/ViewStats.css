@@ -1,0 +1,216 @@
+.view-stats-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #efd7f1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(222, 247, 5, 0.1);
+  }
+  
+  .select-container {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .select-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .submit-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #ff0062;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  
+  
+  .submit-button:hover {
+    background-color: #f87fbb;
+  }
+  
+ 
+
+  /* Add this CSS to your styles file or in a <style> tag in your component */
+.table-header {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  
+  .attendance-table {
+    border-collapse: collapse;
+    width: 100%;
+   
+  }
+  
+  .attendance-table th, .attendance-table td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .attendance-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .attendance-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  .present-status {
+    color: green;
+    font-weight: bolder;
+  }
+  
+  .absent-status {
+    color: red;
+    font-weight: bolder;
+
+  }
+  
+
+  .notmarked-status {
+    color: black;
+    font-weight: bolder;
+  }
+  
+  /* .add-attendance-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+  }
+  
+  .add-attendance-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .add-attendance-modal label {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .add-attendance-modal button {
+    margin-top: 10px;
+  } */
+
+
+  .add-attendance-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff; /* White background */
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+    border-radius: 10px; /* Rounded corners */
+    width: 370px; /* Adjust the width as needed */
+  }
+  
+  .add-attendance-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Increased gap between form elements */
+  }
+  
+  .add-attendance-modal label {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .add-attendance-modal button {
+    background-color: #4caf50; /* Green background color */
+    color: #fff; /* White text color */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-attendance-modal button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  
+  /* .edit-attendance-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+  }
+  
+  .edit-attendance-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .edit-attendance-modal label {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .edit-attendance-modal button {
+    margin-top: 10px;
+  } */
+
+  
+  .edit-attendance-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff; /* White background */
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+    border-radius: 10px; /* Rounded corners */
+    width: 370px; /* Adjust the width as needed */
+  }
+  
+  .edit-attendance-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Increased gap between form elements */
+  }
+  
+  .edit-attendance-modal label {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .edit-attendance-modal button {
+    background-color: #fd4e2f; /* Green background color */
+    color: #fff; /* White text color */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-attendance-modal button:hover {
+    background-color: #eea94e; /* Darker green on hover */
+  }
+  
+  
+  
+  

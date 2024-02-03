@@ -42,7 +42,7 @@ return (
 
           <tbody>
           {data.map((employee, index) => {
-    const formattedDate = new Date(employee.date).toISOString().split('T')[0];
+    const formattedDate = new Date(employee.date).toLocaleDateString();
     return (
         <tr key={index}>
             <td>{employee.name}</td>
@@ -57,6 +57,9 @@ return (
                 >
                     Attendance
                 </Link>
+                <Link to={`/viewStats/${employee.id}`} className="btn btn-success" style={{marginLeft:'16px'}}>Statistics</Link>
+                {/* <Link to={`/newAttendance/${employee.id}`} className="btn btn-success" style={{marginLeft:'16px'}}>Statistics</Link> */}
+
             </td>
         </tr>
     );

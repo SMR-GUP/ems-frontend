@@ -62,6 +62,21 @@ app.get('/getEmployee' , (req,res) =>{
 })
 
 
+app.get('/getSizes' , (req,res) =>{
+    const sql="SELECT * FROM sizes";
+    con.query(sql, (err,result)=>{
+        if(err)
+        {
+            return res.json({Error:"Get size error in sql"});
+        }
+
+        return res.json({Status:"Success",Result:result});
+    })
+})
+
+
+
+
 
 
 app.post('/login',(req,res) =>{
@@ -81,14 +96,13 @@ app.post('/login',(req,res) =>{
 })
 
 
-app.put('/update/:id', upload.single('image'), (req, res) => {
-    const sql = "UPDATE employee SET name=?, date=?, day=?, salary=?, image=? WHERE id=?";
+app.put('/update/:id', (req, res) => {
+    const sql = "UPDATE employee SET name=?, date=?, day=?, salary=? WHERE id=?";
     const values = [
         req.body.name,
         formatDate(req.body.joiningDate),      
         req.body.weekday,
         req.body.salary,
-        req.file ? req.file.filename : req.body.image, // If a new image is uploaded, use it, otherwise keep the existing one
         req.params.id
     ];
 
@@ -100,6 +114,59 @@ app.put('/update/:id', upload.single('image'), (req, res) => {
         return res.json({ Status: "Success" });
     });
 });
+
+
+app.put('/updateAttendance/:id/:day/:month/:year', (req, res) => {
+    const sql = "UPDATE attendance SET status=? WHERE employee_id=? AND day=? AND month=? AND year=?";
+    const values = [
+      req.body.status,
+      req.params.id,
+      req.params.day,
+      req.params.month,
+      req.params.year
+    ];
+  
+    con.query(sql, values, (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.json({ error: "Error updating attendance" });
+      }
+  
+      return res.json({ success: true, message: "Attendance updated successfully" });
+    });
+  });
+
+
+  app.put('/updateProgress/:id/:day/:month/:year/:quantity/:sizeno/:value/:packed', (req, res) => {
+    // console.log("API called");
+    const sql = "UPDATE progress SET quantity=? ,sizeno=? ,value=?, packed=? WHERE emp_id=? AND day=? AND month=? AND year=? AND quantity=? AND sizeno=? AND value=? AND packed=?";
+    const values = [
+        req.body.quantity,
+        req.body.sizeno,
+        req.body.value,
+        req.body.packed,
+      req.params.id,
+      req.params.day,
+      req.params.month,
+      req.params.year,
+      req.params.quantity,  // Match the existing values in the WHERE clause
+      req.params.sizeno,
+      req.params.value,
+      req.params.packed,
+    ];
+  
+    con.query(sql, values, (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.json({ error: "Error updating progress" });
+      }
+  
+      return res.json({ success: true, message: "Progress updated successfully" });
+    });
+  });
+
+
+  
 
 app.get('/get/:id', (req, res) => {
     const employeeId = req.params.id;
@@ -115,6 +182,7 @@ app.get('/get/:id', (req, res) => {
     });
 });
 
+
 app.delete('/delete/:id', (req, res) => {
     const id = req.params.id;
     const sql = "Delete FROM employee WHERE id = ?";
@@ -124,8 +192,35 @@ app.delete('/delete/:id', (req, res) => {
     })
 })
 
+app.delete('/deleteProgress/:id/:month/:day/:year/:quantity/:sizeno/:value/:packed', (req, res) => {
+    const id = req.params.id;
+    const month = req.params.month;
+    const day = req.params.day;
+    const year = req.params.year;
+    const quantity = req.params.quantity;
+    const sizeno = req.params.sizeno;
+    const value = req.params.value;
+    const packed = req.params.packed;
+
+    // console.log(id+"  "+day+"  "+month+"  "+year);
+
+    const sql = "DELETE FROM progress WHERE emp_id = ? AND month = ? AND day = ?  AND year = ? AND quantity = ? AND sizeno = ? AND value = ? AND packed = ?";
+    
+    con.query(sql, [id, day, month, year,quantity,sizeno,value,packed], (err, result) => {
+        if (err) return res.json({ Error: "Delete progress error in SQL" });
+
+        // if (result.affectedRows === 0) {
+        //     // No matching record found
+        //     return res.json({ Status: "No matching record found for deletion" });
+        // }
+
+        return res.json({ Status: "Success" });
+    });
+});
+
+
 app.post('/submitAttendance/:id',async (req, res) => {
-    console.log("Requesttttt",req.body);
+    // console.log("Requesttttt",req.body);
     const sql= "INSERT INTO attendance (`employee_id`,`month`,`day`,`year`,`status`) VALUES (?)";
     const values = [
         req.params.id,
@@ -135,7 +230,6 @@ app.post('/submitAttendance/:id',async (req, res) => {
         req.body.status
     ];
     console.log("Answer",values);
-
     con.query(sql,[values],(err, result) => {
         if (err) {
             console.error(err);
@@ -146,14 +240,121 @@ app.post('/submitAttendance/:id',async (req, res) => {
 });
 
 
-app.post('/create', upload.single('image') , (req,res) => {
-    const sql="INSERT INTO employee (`name`,`date`,`day`,`salary`,`image`) VALUES(?)";
+app.post('/submitProgress/:id',async (req, res) => {
+    console.log("Requesttttt",req.body);
+    const sql= "INSERT INTO progress (`emp_id`,`month`,`day`,`year`,`quantity`,`sizeno`,`value`,`packed`) VALUES (?)";
+    const values = [
+        req.params.id,
+        req.body.month,
+        req.body.day,
+        req.body.year,
+        req.body.quantity,
+        req.body.sizeno,
+        req.body.value,
+        req.body.packed
+    ];
+    console.log("Answer",values);
+    con.query(sql,[values],(err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ Error: "Error in adding progress" });
+        }
+        return res.json({ Status: "Success" });
+    });
+});
+
+
+app.get('/getAttendance/:id', (req, res) => {
+    const employeeId = req.params.id;
+    const { month, year } = req.query;
+    const sql = 'SELECT * FROM attendance WHERE employee_id = ? AND month = ? AND year = ?';
+    con.query(sql, [employeeId, month, year], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ Error: 'Error getting employee details' });
+        }
+
+        return res.json({ Result: result });
+    });
+});
+
+app.get('/getProgress/:id', (req, res) => {
+    const employeeId = req.params.id;
+    const { month, year } = req.query;
+    const sql = 'SELECT * FROM progress WHERE emp_id = ? AND month = ? AND year = ?';
+    con.query(sql, [employeeId, month, year], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ Error: 'Error getting employee details' });
+        }
+
+        return res.json({ Result: result });
+    });
+});
+
+
+app.get('/getDayProgress/:id/:day/:month/:year', (req, res) => {
+    const emp_id = req.params.id;
+    const { day, month, year } = req.params;
+    // console.log(day+" "+month+" "+year+" "+emp_id+"Valueeesss");
+    const sql = 'SELECT * FROM progress WHERE emp_id = ? AND day = ? AND month = ? AND year = ?';
+    con.query(sql, [emp_id, day, month, year], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ Error: 'Error getting progress details' });
+        }
+
+        return res.json({ Result: result });
+    });
+});
+
+
+
+
+
+app.get('/getStatus/:id',(req,res)=> {
+    const employeeId=req.params.id;
+    const {month,year,day}=req.query;
+    const sql='SELECT * FROM attendance WHERE employee_id = ? AND month = ? AND year = ? AND day=?';
+    con.query(sql,[employeeId,month,year,day],(err,result)=>{
+        if(err){
+            console.error('Error in quering database',err);
+            return res.json({Error:'Error in fetching details'});
+        }
+        else
+        {
+            const status = result.length > 0 ? result[0].status : 'Not Marked';
+            return res.json({ status });
+        }
+    })
+});
+
+app.get('/getSalary/:id', (req, res) => {
+    const employeeId = req.params.id;
+
+    const sql = 'SELECT * FROM employee WHERE id = ?';
+    con.query(sql, [employeeId], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ Error: 'Error getting employee details' });
+        }
+
+        if (result.length === 0) {
+            return res.json({ Error: 'Employee not found' });
+        }
+
+        const salary = result[0].salary;
+        return res.json({ Salary: salary });
+    });
+});
+
+app.post('/create', (req,res) => {
+    const sql="INSERT INTO employee (`name`,`date`,`day`,`salary`) VALUES(?)";
     const values = [
         req.body.name,
         formatDate(req.body.joiningDate),      
         req.body.weekday,
         req.body.salary,
-        req.file.filename
     ]
     con.query(sql, [values], (err, result) => {
         if(err) {
@@ -163,6 +364,25 @@ app.post('/create', upload.single('image') , (req,res) => {
         return res.json({Status: "Success"});
     })
 })
+
+app.post('/addsize', (req, res) => {
+    const sql = "INSERT INTO sizes (`sizeno`, `sizecode`) VALUES (?, ?)";
+    const values = [
+      req.body.sizeno,
+      req.body.sizecode
+    ];
+  
+    con.query(sql, values, (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.json({ Error: "Error in size entry query" });
+      }
+      return res.json({ Status: "Size entry added successfully" });
+    });
+  });
+  
+
+
 
 
 
