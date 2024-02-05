@@ -24,10 +24,8 @@ return (
       <div className=' d-flex justify-content-center mt-3' >
           <h4>Manage Attendance</h4>
       </div>
-      <br></br>
-      <br></br>
-
-      <div className='mt-3'>
+      
+      <div className='mt-4' style={{ textAlign: 'center' }}>
       <table className='table'>
           <thead>
               <tr>
@@ -35,7 +33,6 @@ return (
                   <th>Joining Date </th>
                   <th>Salary </th>
                   <th>Actions</th>
-
               </tr>
           </thead>
 
@@ -46,18 +43,11 @@ return (
     return (
         <tr key={index}>
             <td>{employee.name}</td>
-            <td>{formattedDate}</td> 
+            <td>{new Date(formattedDate).toLocaleDateString('en-GB')}</td>
             <td>{employee.salary}</td>
             <td>
-                <Link 
-                    to=
-                      {`/addAttendance/${employee.id}`}
-                   
-                    className="btn btn-warning"
-                >
-                    Attendance
-                </Link>
-                <Link to={`/viewStats/${employee.id}`} className="btn btn-success" style={{marginLeft:'16px'}}>Statistics</Link>
+               
+                <Link to={`/viewStats/${employee.id}`} className="btn btn-success">Mark Attendance</Link>
                 {/* <Link to={`/newAttendance/${employee.id}`} className="btn btn-success" style={{marginLeft:'16px'}}>Statistics</Link> */}
 
             </td>

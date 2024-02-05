@@ -45,3 +45,17 @@
 
 /* Style for the select dropdown */
 
+.add-progress-modal-overlay {
+  display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Style for the modal content */

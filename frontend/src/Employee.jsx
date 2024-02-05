@@ -53,7 +53,6 @@ function Employee() {
                     <th>Joining Date </th>
                     <th>Day </th>
                     <th>Salary </th>
-                    {/* <th>Image</th> */}
                     <th>Actions</th>
 
                 </tr>
@@ -64,8 +63,8 @@ function Employee() {
     return (
             <tr key={index}>
                 <td>{employee.name}</td>
-                <td>{formattedDate}</td> 
-                <td>{employee.day}</td>
+               <td>{new Date(formattedDate).toLocaleDateString('en-GB')}</td>
+               <td>{employee.day}</td>
                 <td>{employee.salary}</td>
                 {/* <td>{
                     <img src={`http://localhost:8081/images/`+employee.image } alt="" className='employee_image'/>

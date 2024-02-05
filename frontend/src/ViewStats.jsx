@@ -15,23 +15,83 @@ const [addStatus, setAddStatus] = useState('');
 const { id } = useParams();
 
 
-const handleOpenAddAttendanceModal = (day) => {
-  // Set initial values for the form based on the clicked day
-  setAddDay(day);
-  setAddMonth(selectedMonth);
-  setAddYear(selectedYear);
-  setAddStatus('absent');
-  setAddAttendanceModalVisible(true);
+// const handleOpenAddAttendanceModal = (day) => {
+//   // Set initial values for the form based on the clicked day
+//   setAddDay(day);
+//   setAddMonth(selectedMonth);
+//   setAddYear(selectedYear);
+//   setAddStatus('present');
+//   setAddAttendanceModalVisible(true);
+// };
+const fetchEmployeeDetails = async (employeeId) => {
+  try {
+    const response = await axios.get(`http://localhost:8081/get/${employeeId}`);
+    return response.data.Result[0]; // Assuming the employee details are in Result array
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error fetching employee details');
+  }
 };
 
 
-const handleOpenEditAttendanceModal = (day) => {
+const handleOpenAddAttendanceModal = async (day) => {
+  try {
+    const employeeDetails = await fetchEmployeeDetails(id);
+
+    const joiningDate = employeeDetails.date; // Replace 'date' with the actual column name
+
+    const joiningDateStr = joiningDate ? new Date(joiningDate).toLocaleDateString('en-GB') : '';
+
+    setAddDay(day);
+    setAddMonth(selectedMonth);
+    setAddYear(selectedYear);
+    setAddStatus('present');
+
+    // Compare selected date with joining date
+    if (new Date(`${selectedYear}-${selectedMonth}-${day}`) < new Date(joiningDate)) {
+      // Show an alert if the selected date is before the joining date
+      alert(`Selected date is before the ${employeeData.name}'s  joining date : ${joiningDateStr}!`);
+    } else {
+      // Open the modal if the selected date is after or equal to the joining date
+      setAddAttendanceModalVisible(true);
+    }
+  } catch (error) {
+    console.error(error);
+    // Handle the error as needed
+  }
+};
+
+
+const handleOpenEditAttendanceModal = async(day) => {
   // Set initial values for the form based on the clicked day
-  setAddDay(day);
-  setAddMonth(selectedMonth);
-  setAddYear(selectedYear);
-  setAddStatus('absent');
-  setEditAttendanceModalVisible(true);
+  try {
+    // Fetch attendance details for the selected date
+    const attendanceDetails = await fetchAttendanceDetails(selectedYear, selectedMonth, day);
+    console.log("Attendance Details: ", attendanceDetails);
+
+    // Set initial values for the form based on the clicked day and fetched attendance details
+    setAddDay(day);
+    setAddMonth(selectedMonth);
+    setAddYear(selectedYear);
+    setAddStatus(attendanceDetails.Result[0].status);
+    setEditAttendanceModalVisible(true);
+  } 
+  catch (error) {
+    console.error(error);
+    // Handle the error as needed
+  }
+};
+
+
+const fetchAttendanceDetails = async (year, month, day) => {
+  try {
+    const response = await axios.get(`http://localhost:8081/getDayAttendance/${id}/${year}/${month}/${day}`);
+    console.log("Atten  ",response);
+    return response.data; // Assuming the API returns the attendance details
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error fetching attendance details');
+  }
 };
 
 
@@ -249,23 +309,10 @@ const handleEditAttendance = async (e) => {
        </tr>
      </thead>
      <tbody>
-     
-{/*       
-     {attendanceData.map((record, index) => (
-         <tr key={index}>
-           <td>{record.day}</td>
-           <td>{record.month}</td>
-           <td>{record.year}</td>
-           <td className={record.status === 'present' ? 'present-status' : 'absent-status'}>
-        {record.status}
-      </td>
-      <td><button className="btn btn-info" style={{color:'white'}}>Delete</button></td>
-         </tr>
-       ))}
-       */}
+ 
        {Array.from({ length: ndays }, (_, index) => index + 1).map((day) => {
   const record = attendanceData.find((record) => record.day === day);
-        console.log("recorddd  ",day+" "+record);
+        // console.log("recorddd  ",day+" "+record);
   return (
     <tr key={day}>
       <td>{record ? record.day : day}</td>
@@ -287,56 +334,42 @@ const handleEditAttendance = async (e) => {
 })}
 {editAttendanceModalVisible && (
   <div className="edit-attendance-modal">
-    <h3>Edit Attendance</h3>
     <form onSubmit={handleEditAttendance}>
-      <label>
-        Day:
-        <input type="number" value={addDay} onChange={(e) => setAddDay(e.target.value)} />
-      </label>
-      <label>
-        Month:
-        <input type="text" value={addMonth} onChange={(e) => setAddMonth(e.target.value)} />
-      </label>
-      <label>
-        Year:
-        <input type="number" value={addYear} onChange={(e) => setAddYear(e.target.value)} />
-      </label>
+    <label>
+    Date:
+    <input type="text" value={`${addDay}/${addMonth}/${addYear}`} readOnly />
+  </label>
       <label>
       Status:
-        <select value={addStatus} onChange={(e) => setAddStatus(e.target.value)}>
-          <option value="absent">absent</option>
+        <select value={addStatus} onChange={(e) => setAddStatus(e.target.value)} style={{ fontSize: '22px' }}>
           <option value="present">present</option>
+          <option value="absent">absent</option>
         </select>
       </label>
+      <br></br>
       <button type="submit">Edit Attendance</button>
-      <button type="button" onClick={handleCloseEditAttendanceModal}>Cancel</button>
+
+      <button type="button" onClick={handleCloseEditAttendanceModal} >Cancel</button>
     </form>
   </div>
 )}
 
 {addAttendanceModalVisible && (
   <div className="add-attendance-modal">
-    <h3>Add Attendance</h3>
     <form onSubmit={handleAddAttendance}>
-      <label>
-        Day:
-        <input type="number" value={addDay} onChange={(e) => setAddDay(e.target.value)} />
-      </label>
-      <label>
-        Month:
-        <input type="text" value={addMonth} onChange={(e) => setAddMonth(e.target.value)} />
-      </label>
-      <label>
-        Year:
-        <input type="number" value={addYear} onChange={(e) => setAddYear(e.target.value)} />
-      </label>
+    <label>
+    Date:
+    <input type="text" value={`${addDay}/${addMonth}/${addYear}`} readOnly />
+  </label>
       <label>
       Status:
-        <select value={addStatus} onChange={(e) => setAddStatus(e.target.value)}>
-          <option value="absent">absent</option>
+        <select value={addStatus} onChange={(e) => setAddStatus(e.target.value)}  style={{ fontSize: '22px' }}>
           <option value="present">present</option>
+          <option value="absent">absent</option>
+
         </select>
       </label>
+      <br></br>
       <button type="submit">Add Attendance</button>
       <button type="button" onClick={handleCloseAddAttendanceModal}>Cancel</button>
     </form>

@@ -1,6 +1,7 @@
 import React from 'react';
 import './Dashboard.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 
@@ -32,6 +33,11 @@ function Dashboard() {
                     <li>
                         <Link to="/employee" class="nav-link px-0 align-middle  text-white">
                             <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Manage Employees</span> </Link>
+                    </li>
+
+                    <li>
+                        <Link to="/sizes" class="nav-link px-0 align-middle  text-white">
+                            <i class="fs-4 bi bi-database-add"></i> <span class="ms-1 d-none d-sm-inline">Size Entries</span> </Link>
                     </li>
                 </ul>
                

@@ -136,6 +136,24 @@ app.put('/updateAttendance/:id/:day/:month/:year', (req, res) => {
     });
   });
 
+  app.put('/updateSizeEntry/:id',(req,res) =>{
+    const sql = "UPDATE sizes SET sizeno=? ,sizecode=?  WHERE id=?";
+    const values =[
+        req.body.sizeno,
+        req.body.sizecode,
+        req.params.id,
+    ];
+
+    con.query(sql, values, (err, result) => {
+        if (err) {
+          console.error(err);
+          return res.json({ error: "Error updating size entry" });
+        }
+    
+        return res.json({ success: true, message: "Size Entry updated successfully" });
+      });
+  })
+
 
   app.put('/updateProgress/:id/:day/:month/:year/:quantity/:sizeno/:value/:packed', (req, res) => {
     // console.log("API called");
@@ -183,6 +201,25 @@ app.get('/get/:id', (req, res) => {
 });
 
 
+app.get('/getDayAttendance/:id/:year/:month/:day', (req, res) => {
+    const { id,year, month, day } = req.params;
+
+    const sql = 'SELECT * FROM attendance WHERE employee_id=? AND YEAR = ? AND MONTH = ? AND DAY = ?';
+    con.query(sql, [id,year, month, day], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ Error: 'Error getting day-wise attendance details' });
+        }
+
+        return res.json({ Result: result });
+    });
+});
+
+
+
+
+
+
 app.delete('/delete/:id', (req, res) => {
     const id = req.params.id;
     const sql = "Delete FROM employee WHERE id = ?";
@@ -191,6 +228,19 @@ app.delete('/delete/:id', (req, res) => {
         return res.json({Status: "Success"})
     })
 })
+
+
+
+app.delete('/deleteSizeEntry/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = "Delete FROM sizes WHERE id = ?";
+    con.query(sql, [id], (err, result) => {
+        if(err) return res.json({Error: "delete size error in sql"});
+        return res.json({Status: "Success"})
+    })
+})
+
+
 
 app.delete('/deleteProgress/:id/:month/:day/:year/:quantity/:sizeno/:value/:packed', (req, res) => {
     const id = req.params.id;
@@ -278,6 +328,23 @@ app.get('/getAttendance/:id', (req, res) => {
     });
 });
 
+
+app.get('/getPacking/:packed', (req, res) => {
+    const { packed } = req.params;
+    const { month, year } = req.query;
+    const sql = 'SELECT * FROM progress WHERE packed = ? AND month = ? AND year = ?';
+
+    con.query(sql, [packed, month, year], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ Error: 'Error getting packing details' });
+        }
+
+        return res.json({ Result: result });
+    });
+});
+
+
 app.get('/getProgress/:id', (req, res) => {
     const employeeId = req.params.id;
     const { month, year } = req.query;
@@ -302,6 +369,23 @@ app.get('/getDayProgress/:id/:day/:month/:year', (req, res) => {
         if (err) {
             console.error(err);
             return res.json({ Error: 'Error getting progress details' });
+        }
+
+        return res.json({ Result: result });
+    });
+});
+
+
+
+
+app.get('/getDayPacking/:packed/:day/:month/:year', (req, res) => {
+    const packed = req.params.packed;
+    const { day, month, year } = req.params;
+    const sql = 'SELECT * FROM progress WHERE packed = ? AND day = ? AND month = ? AND year = ?';
+    con.query(sql, [packed, day, month, year], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ Error: 'Error getting packing details' });
         }
 
         return res.json({ Result: result });

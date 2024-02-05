@@ -7,10 +7,11 @@ import Attendance from './Attendance'
 import Progress from './Progress'
 import AddEmployee from './AddEmployee'
 import EditEmployee from './EditEmployee'
-import AddAttendance from './AddAttendance'
 import ViewStats from './ViewStats'
 import NewAttendance from './NewAttendance'
 import AddProgress from './AddProgress'
+import ViewPacking from './ViewPacking'
+import SizeEntry from './SizeEntry'
 
 function App() {
   return (
@@ -22,11 +23,14 @@ function App() {
       <Route path='/employee' element={<Employee />}> </Route>
       <Route path='/attendance' element={<Attendance />}> </Route>
       <Route path='/create' element={<AddEmployee />}> </Route>
-      <Route path='/employeeEdit/:id' element={<EditEmployee />}> </Route>
-      <Route path='/addAttendance/:id' element={<AddAttendance/>}> </Route>
+      <Route path='/employeeEdit/:id' element={<EditEmployee/>}> </Route>
       <Route path='/viewStats/:id' element={<ViewStats/>}> </Route>
       <Route path='/newAttendance/:id' element={<NewAttendance/>}> </Route>
       <Route path='/addProgress/:id' element={<AddProgress/>}></Route>
+      <Route path='/viewPacking/:id' element={<ViewPacking/>}></Route>
+      <Route path='/sizes' element={<SizeEntry />}> </Route>
+
+
 
       </Route>
 

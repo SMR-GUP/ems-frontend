@@ -126,7 +126,7 @@
   .add-attendance-modal form {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Increased gap between form elements */
+    gap: 5px; /* Increased gap between form elements */
   }
   
   .add-attendance-modal label {
@@ -190,7 +190,7 @@
   .edit-attendance-modal form {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Increased gap between form elements */
+    gap: 5px; /* Increased gap between form elements */
   }
   
   .edit-attendance-modal label {

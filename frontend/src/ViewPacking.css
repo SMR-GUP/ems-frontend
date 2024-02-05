@@ -1,0 +1,38 @@
+.view-packing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .heading {
+    color: #3498db;
+  }
+  
+  .view-packing-form-container {
+    width: 300px;
+    margin-top: 20px;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+  
+  .view-packing-submit-button {
+    background-color: #3498db;
+    width: 300px;
+
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .view-packing-submit-button:hover {
+    background-color: #2980b9;
+  }
+  

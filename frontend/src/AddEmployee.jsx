@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,6 +16,8 @@ function AddEmployee() {
             weekday:'',
             joiningDate:''
     });
+
+  
 
     const handleDateChange = date => {
       setJoiningDate(date);
@@ -67,7 +69,7 @@ function AddEmployee() {
           <DatePicker
             selected={joiningDate}
             onChange={handleDateChange}
-            dateFormat="yyyy-MM-dd"
+            dateFormat="dd-MM-yyyy"
             id="inputJoiningDate"
             className="form-control"
             placeholderText="Select Date"
