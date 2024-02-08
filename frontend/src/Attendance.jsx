@@ -9,7 +9,7 @@ function Attendance() {
   useEffect(()=> {
     axios.get('http://localhost:8081/getEmployee')
     .then(res =>{
-        if(res.data.Status=="Success")
+        if(res.data.status=="Success")
         {
             setData(res.data.Result);
         }
@@ -39,6 +39,7 @@ return (
 
           <tbody>
           {data.map((employee, index) => {
+            
     const formattedDate = new Date(employee.date).toLocaleDateString();
     return (
         <tr key={index}>
@@ -47,7 +48,7 @@ return (
             <td>{employee.salary}</td>
             <td>
                
-                <Link to={`/viewStats/${employee.id}`} className="btn btn-success">Mark Attendance</Link>
+                <Link to={`/viewStats/${employee._id}`} className="btn btn-success">Mark Attendance</Link>
                 {/* <Link to={`/newAttendance/${employee.id}`} className="btn btn-success" style={{marginLeft:'16px'}}>Statistics</Link> */}
 
             </td>

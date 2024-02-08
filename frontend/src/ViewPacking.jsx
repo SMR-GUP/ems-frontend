@@ -14,6 +14,20 @@ function ViewPacking() {
 
   const { id } = useParams();
 
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8081/getEmployee")
+      .then((res) => {
+        if (res.data.status == "Success") {
+          setData(res.data.Result);
+          console.log("All employees", data);
+        }
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const calculateTotalQuantity = () => {
     return dayPacking.reduce(
       (total, record) => total + parseFloat(record.quantity),
@@ -60,7 +74,7 @@ function ViewPacking() {
   useEffect(() => {
     axios
       .get(`http://localhost:8081/get/${id}`)
-      .then((res) => setEmployeeData(res.data.Result[0]))
+      .then((res) => setEmployeeData(res.data.Result))
       .catch((err) => console.error(err));
   }, [id]);
 
@@ -88,6 +102,12 @@ function ViewPacking() {
     e.preventDefault();
     console.log(selectedMonth);
     console.log(selectedYear);
+    const isValidYear = selectedYear >= 1950 && selectedYear <= 2070;
+
+    if (!isValidYear) {
+      alert("Enter a year in 1950-2070 range ");
+      return; // Exit the function early
+    }
     try {
       const numericMonth = monthNames.indexOf(selectedMonth) + 1;
       const numericYear = parseInt(selectedYear, 10);
@@ -264,7 +284,7 @@ function ViewPacking() {
 
                   <div className="progress-data-container">
                     <h6 style={{ fontWeight: "bold", color: "red" }}>
-                      {employeeData.name} Progress -{" "}
+                      {employeeData.name} Packing -{" "}
                       {dayPacking.length > 0 &&
                         formatDate(
                           dayPacking[0].day,
@@ -280,7 +300,7 @@ function ViewPacking() {
                           <th>Size Number</th>
                           <th>Quantity(in kg)</th>
                           <th>Value</th>
-                          <th>Packed By</th>
+                          <th>Manufactured By</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -290,7 +310,13 @@ function ViewPacking() {
                             <td>{record.sizeno}</td>
                             <td>{record.quantity}</td>
                             <td>{record.value}</td>
-                            <td>{record.packed}</td>
+                            <td>
+                              {
+                                data.find(
+                                  (employee) => employee._id === record.emp_id.toString()
+                                )?.name
+                              }
+                            </td>{" "}
                           </tr>
                         ))}
 

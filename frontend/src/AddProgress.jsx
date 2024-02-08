@@ -22,27 +22,83 @@ function AddProgress() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isViewModalOpen, setViewModalOpen] = useState(false);
-  const [isEntryModalOpen, setEntryModalOpen] = useState(false);
-  const [isDeleteEntryModalOpen, setDeleteEntryModalOpen] = useState(false);
-  const [selectedEntryId, setSelectedEntryId] = useState("");
-  const [selectedDeleteEntryId, setSelectedDeleteEntryId] = useState("");
+  const [editSelect,setEditSelect]=useState('');
+  const [deleteSelect,setDeleteSelect]=useState('');
 
   const { id } = useParams();
 
   // Add these functions somewhere in your component or utility functions
-  const calculateTotalQuantity = () => {
-    return progressDayData.reduce(
-      (total, record) => total + parseFloat(record.quantity),
-      0
-    );
-  };
 
-  const calculateTotalValue = () => {
-    return progressDayData.reduce(
-      (total, record) => total + parseFloat(record.value),
-      0
+  const handleProgressDelete = async(record)=>{
+    console.log("HOOO");
+    console.log(record);
+    setDeleteSelect(record._id);
+    console.log("Id", record._id);
+    const isConfirmed = window.confirm(
+      `Are you sure you want to delete progress for ${employeeData.name} ?`
     );
-  };
+
+    if (isConfirmed) {
+      try {
+        const response = await axios.delete(`http://localhost:8081/deleteProgress/${id}/${record._id}`);
+        console.log("responseee   ",response);
+        if (response.data.Status === "Success") {
+          console.log("deleted");
+          const fakeEvent = {
+            preventDefault: () => {}, // Mocking preventDefault function
+          };
+          handleSubmit(fakeEvent);
+          
+      const simulateClick = async () => {
+        await openViewModal(record.day);
+    };
+    simulateClick();
+
+      setViewModalOpen(true);
+      
+        } 
+        else {
+          alert("Error");
+        }
+
+      } catch (error) {
+        console.error(error.message);
+      }
+    } else {
+      console.log("Delete canceled");
+    }
+  }
+
+  const handleEdit = (record)=>{
+      console.log("record obtained  ",record);
+      setEditSelect(record._id);
+      setAddDay(record.day);
+      setAddMonth(record.month);
+      setAddYear(record.year);
+      setAddQuantity(record.quantity);
+      setAddPacked(record.packed);
+      setAddSizeno(record.sizeno);
+      setAddValue(record.value);
+      setViewModalOpen(false);
+      setEditModalOpen(true);
+  }
+
+
+  const calculateTotalQuantity = () => {
+    const total = progressDayData.reduce(
+        (total, record) => total + parseFloat(record.quantity),
+        0
+    );
+    return total.toFixed(2);
+};
+
+const calculateTotalValue = () => {
+    const total = progressDayData.reduce(
+        (total, record) => total + parseFloat(record.value),
+        0
+    );
+    return total.toFixed(2);
+};
 
   const formatDate = (day, month, year) => {
     // Assuming day, month, and year are valid numbers
@@ -50,96 +106,7 @@ function AddProgress() {
     return formattedDate;
   };
 
-  const handleEntrySelect = (selectedId) => {
-    setSelectedEntryId(selectedId);
-    console.log("Selected Entryyyy  ", selectedEntryId);
-  };
-
-  const handleDeleteEntrySelect = (selectedDeleteId) => {
-    setSelectedDeleteEntryId(selectedDeleteId);
-    console.log("Selected Entryyyy  ", selectedDeleteId);
-  };
-
-  const handleDeleteClick = async (day) => {
-    const isConfirmed = window.confirm(
-      `Are you sure you want to delete progress for ${employeeData.name} ?`
-    );
-
-    if (isConfirmed) {
-      // console.log("data deleted ");
-      // console.log("iddd  ",id);
-      // console.log("data before ",progressDayData[selectedDeleteEntryId-1].day);
-      // console.log("data before ",progressDayData[selectedDeleteEntryId-1].month);
-      // console.log("data before ",progressDayData[selectedDeleteEntryId-1].year);
-      // console.log("data before ",progressDayData[selectedDeleteEntryId-1].quantity);
-      // console.log("data before ",progressDayData[selectedDeleteEntryId-1].sizeno);
-      // console.log("data before ",progressDayData[selectedDeleteEntryId-1].value);
-      // console.log("data before ",progressDayData[selectedDeleteEntryId-1].packed);
-
-      try {
-        const response = await axios.delete(
-          `http://localhost:8081/deleteProgress/${id}/${
-            progressDayData[selectedDeleteEntryId - 1].day
-          }/${progressDayData[selectedDeleteEntryId - 1].month}/${
-            progressDayData[selectedDeleteEntryId - 1].year
-          }/${progressDayData[selectedDeleteEntryId - 1].quantity}/${
-            progressDayData[selectedDeleteEntryId - 1].sizeno
-          }/${progressDayData[selectedDeleteEntryId - 1].value}/${
-            progressDayData[selectedDeleteEntryId - 1].packed
-          }`
-        );
-        if (response.data.Status === "Success") {
-          console.log("deleted");
-          const fakeEvent = {
-            preventDefault: () => {}, // Mocking preventDefault function
-          };
-
-          handleSubmit(fakeEvent);
-        } else {
-          alert("Error");
-        }
-        closeDeleteEntryModal();
-      } catch (error) {
-        console.error(error.message);
-        // Handle any additional error handling as needed
-      }
-    } else {
-      // Handle the case where the user cancels the delete action
-      console.log("Delete canceled");
-    }
-  };
-
-  const openEntryModal = async (day) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8081/getDayProgress/${id}/${day}/${selectedMonth}/${selectedYear}`
-      );
-      console.log("My response", response.data);
-      const progressDayData = response.data.Result;
-      setProgressDayData(progressDayData);
-
-      console.log("Data ", progressDayData);
-      setEntryModalOpen(true);
-    } catch (error) {
-      console.error("Error fetching progress data:", error);
-    }
-  };
-
-  const openDeleteEntryModal = async (day) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8081/getDayProgress/${id}/${day}/${selectedMonth}/${selectedYear}`
-      );
-      console.log("My response", response.data);
-      const progressDayData = response.data.Result;
-      setProgressDayData(progressDayData);
-
-      console.log("Data ", progressDayData);
-      setDeleteEntryModalOpen(true);
-    } catch (error) {
-      console.error("Error fetching progress data:", error);
-    }
-  };
+  
 
   const openViewModal = async (day) => {
     try {
@@ -159,24 +126,21 @@ function AddProgress() {
     }
   };
 
+
+
   const closeViewModal = () => {
     setViewModalOpen(false);
   };
 
-  const closeEntryModal = () => {
-    setEntryModalOpen(false);
-  };
-
-  const closeDeleteEntryModal = () => {
-    setDeleteEntryModalOpen(false);
-  };
+ 
 
   const fetchEmployeeDetails = async (employeeId) => {
     try {
       const response = await axios.get(
         `http://localhost:8081/get/${employeeId}`
       );
-      return response.data.Result[0]; // Assuming the employee details are in Result array
+
+      return response.data.Result; // Assuming the employee details are in Result array
     } catch (error) {
       console.error(error);
       throw new Error("Error fetching employee details");
@@ -198,8 +162,8 @@ function AddProgress() {
       setAddValue("0");
       setAddQuantity("0");
       if (
-        new Date(`${selectedYear}-${selectedMonth}-${day}`) <
-        new Date(joiningDate)
+        new Date(`${selectedYear}-${selectedMonth}-${day}`).toLocaleDateString('en-GB') <
+        new Date(joiningDate).toLocaleDateString('en-GB')
       ) {
         alert(
           `Selected date is before the ${employeeData.name}'s  joining date : ${joiningDateStr}!`
@@ -217,28 +181,10 @@ function AddProgress() {
     setModalOpen(false);
   };
 
-  const openEditModal = async (day) => {
-    closeEntryModal();
-
-    try {
-      const firstRecord = progressDayData[selectedEntryId - 1];
-
-      setAddDay(firstRecord.day);
-      setAddMonth(selectedMonth);
-      setAddYear(selectedYear);
-      setAddPacked(firstRecord.packed);
-      setAddSizeno(firstRecord.sizeno);
-      setAddValue(firstRecord.value);
-      setAddQuantity(firstRecord.quantity);
-      console.log("Data ", progressDayData);
-      setEditModalOpen(true);
-    } catch (error) {
-      console.error("Error fetching progress data:", error);
-    }
-  };
-
+  
   const closeEditModal = () => {
     setEditModalOpen(false);
+    setViewModalOpen(true);
   };
 
   useEffect(() => {
@@ -309,7 +255,7 @@ function AddProgress() {
       );
 
       // Handle success, maybe close the modal or perform additional actions
-      console.log("Progress submitted successfully:", response.data);
+      console.log("Progress submitted successfully:", response);
 
       // Close the modal or perform any other actions as needed
       setModalOpen(false);
@@ -327,39 +273,14 @@ function AddProgress() {
   const handleProgressEdit = async () => {
     try {
       const data = {
-        day: addDay,
-        month: addMonth,
-        year: addYear,
         quantity: addQuantity,
         packed: addPacked,
         sizeno: addSizeno,
         value: addValue,
-      };
-
-      // Make a PUT request to update the attendance based on ID, day, month, and year
-      console.log("new data ", data);
-      console.log("iddd  ", id);
-      console.log("data before ", progressDayData[selectedEntryId - 1].day);
-      console.log("data before ", progressDayData[selectedEntryId - 1].month);
-      console.log("data before ", progressDayData[selectedEntryId - 1].year);
-      console.log(
-        "data before ",
-        progressDayData[selectedEntryId - 1].quantity
-      );
-      console.log("data before ", progressDayData[selectedEntryId - 1].sizeno);
-      console.log("data before ", progressDayData[selectedEntryId - 1].value);
-      console.log("data before ", progressDayData[selectedEntryId - 1].packed);
+      };     
 
       const response = await axios.put(
-        `http://localhost:8081/updateProgress/${id}/${
-          progressDayData[selectedEntryId - 1].day
-        }/${progressDayData[selectedEntryId - 1].month}/${
-          progressDayData[selectedEntryId - 1].year
-        }/${progressDayData[selectedEntryId - 1].quantity}/${
-          progressDayData[selectedEntryId - 1].sizeno
-        }/${progressDayData[selectedEntryId - 1].value}/${
-          progressDayData[selectedEntryId - 1].packed
-        }`,
+        `http://localhost:8081/updateProgress/${id}/${editSelect}`,
         data
       );
       // console.log("Response",response);
@@ -378,12 +299,25 @@ function AddProgress() {
       console.error("Error updating progress:", error);
     } finally {
       // Close the modal after updating
-      setEditModalOpen(false);
       const fakeEvent = {
         preventDefault: () => {}, // Mocking preventDefault function
       };
 
       handleSubmit(fakeEvent);
+      setEditModalOpen(false);
+
+      const simulateClick = async () => {
+        // Assuming you have defined these variables elsewhere
+       
+    
+        await openViewModal(addDay);
+    };
+    
+    // Call the simulateClick function
+    simulateClick();
+
+      setViewModalOpen(true);
+      
     }
   };
 
@@ -391,6 +325,12 @@ function AddProgress() {
     e.preventDefault();
     console.log(selectedMonth);
     console.log(selectedYear);
+    const isValidYear = selectedYear >= 1950 && selectedYear <= 2070;
+
+        if (!isValidYear) {
+            alert("Enter a year in 1950-2070 range ");
+            return; // Exit the function early
+        }
     try {
       const numericMonth = monthNames.indexOf(selectedMonth) + 1;
       const numericYear = parseInt(selectedYear, 10);
@@ -421,9 +361,11 @@ function AddProgress() {
   useEffect(() => {
     axios
       .get(`http://localhost:8081/get/${id}`)
-      .then((res) => setEmployeeData(res.data.Result[0]))
+      .then((res) => setEmployeeData(res.data.Result))
       .catch((err) => console.error(err));
   }, [id]);
+
+
 
   useEffect(() => {
     // Calculate value based on quantity and selected size number
@@ -553,33 +495,7 @@ function AddProgress() {
                       </buttons>
                     ) : (
                       <buttons>
-                        <button
-                          className="btn btn-danger"
-                          style={{ color: "white" }}
-                          onClick={() => openEntryModal(day)}
-                        >
-                          Edit
-                        </button>
-                        <span style={{ marginRight: "10px" }}></span>
-                        <button
-                          className="btn btn-info"
-                          style={{
-                            color: "white",
-                            backgroundColor: "purple",
-                            borderColor: "purple",
-                          }}
-                          onMouseOver={(e) =>
-                            (e.target.style.backgroundColor = "darkorchid")
-                          }
-                          onMouseOut={(e) =>
-                            (e.target.style.backgroundColor = "purple")
-                          }
-                          onClick={() => openDeleteEntryModal(day)}
-                        >
-                          Delete
-                        </button>
-                        <span style={{ marginRight: "10px" }}></span>
-
+                
                         <button
                           className="btn btn-warning"
                           style={{
@@ -604,96 +520,6 @@ function AddProgress() {
                 </tr>
               );
             })}
-
-            {/* delete entry modal */}
-
-            {isDeleteEntryModalOpen && (
-              <div className="progress-modal-overlay">
-                <div className="progress-modal-content">
-                  <span
-                    className="progress-close"
-                    onClick={closeDeleteEntryModal}
-                  >
-                    &times;
-                  </span>
-                  <label htmlFor="selectEntry">Select Serial Number:</label>
-                  <select
-                    id="selectEntry"
-                    value={selectedDeleteEntryId}
-                    onChange={(e) => handleDeleteEntrySelect(e.target.value)}
-                  >
-                    <option value="">Select Entry</option>
-                    {progressDayData.map((entry, index) => (
-                      <option key={index} value={index + 1}>
-                        {index + 1}
-                      </option>
-                    ))}
-                  </select>
-
-                  <div
-                    className="progress-button-container"
-                    style={{ marginTop: "20px" }}
-                  >
-                    <button
-                      className="progress-add-button"
-                      onClick={handleDeleteClick}
-                    >
-                      Delete Progress
-                    </button>
-                    <button
-                      className="progress-cancel-button"
-                      onClick={closeDeleteEntryModal}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* edit entry modal */}
-
-            {isEntryModalOpen && (
-              <div className="progress-modal-overlay">
-                <div className="progress-modal-content">
-                  <span className="progress-close" onClick={closeEntryModal}>
-                    &times;
-                  </span>
-                  <label htmlFor="selectEntry">Select Serial Number:</label>
-                  <select
-                    id="selectEntry"
-                    value={selectedEntryId}
-                    onChange={(e) => handleEntrySelect(e.target.value)}
-                  >
-                    <option value="">Select Entry</option>
-                    {progressDayData.map((entry, index) => (
-                      <option key={index} value={index + 1}>
-                        {index + 1}
-                      </option>
-                    ))}
-                  </select>
-
-                  <div
-                    className="progress-button-container"
-                    style={{ marginTop: "20px" }}
-                  >
-                    <button
-                      className="progress-add-button"
-                      onClick={openEditModal}
-                    >
-                      Edit Progress
-                    </button>
-                    <button
-                      className="progress-cancel-button"
-                      onClick={closeEntryModal}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* edit modal */}
 
             {isEditModalOpen && (
@@ -777,41 +603,7 @@ function AddProgress() {
               </div>
             )}
 
-            {/* view modal */}
-            {/* 
-{isViewModalOpen && (
-  <div className="progress-modal-overlay">
-    <div className="progress-modal-content">
-      <span className="progress-close" onClick={closeViewModal}>&times;</span>
-
-      <div className="progress-data-container">
-
-
-        {progressDayData.map((record, index) => (
-          <div key={index}>
-                  <h6 style={{ fontWeight: 'bold', color: 'red' }}>{employeeData.name} Progress - {record.day}/{record.month}/{record.year}</h6>
-
-
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Serial Number:</span> <span style={{ fontWeight: 'bold', color: 'blue' }}>{index+1}</span></p>
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Size Number:</span> <span style={{ fontWeight: 'bold', color: 'green' }}>{record.sizeno}</span></p>
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Quantity:</span> <span style={{ fontWeight: 'bold', color: 'green' }}>{record.quantity}</span></p>
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Value:</span> <span style={{ fontWeight: 'bold', color: 'green' }}>{record.value}</span></p>
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Packed By:</span> <span style={{ fontWeight: 'bold', color: 'green' }}>{record.packed}</span></p>
-            <br></br>
-            <hr style={{ border: '1px solid #888', margin: '10px 0' }} />
-
-            <br></br>
-
-          </div>
-        ))}
-        <div className="progress-button-container">
-          <button className="progress-cancel-button" onClick={closeViewModal}>Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}  */}
-
+         
             {isViewModalOpen && (
               <div className="progress-modal-overlay">
                 <div className="progress-modal-content">
@@ -838,16 +630,25 @@ function AddProgress() {
                           <th>Quantity(in kg)</th>
                           <th>Value</th>
                           <th>Packed By</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {progressDayData.map((record, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{record.sizeno}</td>
-                            <td>{record.quantity}</td>
-                            <td>{record.value}</td>
-                            <td>{record.packed}</td>
+                            <td style={{fontSize:'18px'}}>{record.sizeno}</td>
+                            <td style={{fontSize:'18px'}}>{record.quantity}</td>
+                            <td style={{fontSize:'18px'}}>{record.value}</td>
+                            <td style={{fontSize:'18px'}}>{record.packed}</td>
+                            <td>
+            <button type="button" className="btn btn-primary mr-1" style={{fontSize:'14px'}} onClick={() => handleEdit(record)}>
+                <i className="bi bi-pencil-fill bi-sm"></i>
+            </button>
+            <button type="button" className="btn btn-danger" style={{marginLeft:'4px',fontSize:'14px'}} onClick={() => handleProgressDelete(record)}>
+                <i className="bi bi-trash-fill bi-sm"></i>
+            </button>
+        </td>
                           </tr>
                         ))}
 
@@ -856,10 +657,10 @@ function AddProgress() {
                           <td colSpan="2">
                             <b>Total</b>
                           </td>
-                          <td>
+                          <td style={{fontSize:'18px'}}>
                             <b>{calculateTotalQuantity()} kg</b>
                           </td>
-                          <td>
+                          <td style={{fontSize:'18px'}}>
                             <b>{calculateTotalValue()}</b>
                           </td>
                           <td></td>

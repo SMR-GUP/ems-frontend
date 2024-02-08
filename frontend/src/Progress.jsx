@@ -15,7 +15,7 @@ function Progress() {
   useEffect(()=> {
     axios.get('http://localhost:8081/getEmployee')
     .then(res =>{
-        if(res.data.Status=="Success")
+        if(res.data.status=="Success")
         {
             setData(res.data.Result);
         }
@@ -57,7 +57,7 @@ return (
             <td>
                 <Link 
                     to=
-                      {`/addProgress/${employee.id}`}
+                      {`/addProgress/${employee._id}`}
                    
                     className="btn btn-success"
                 >
@@ -66,7 +66,7 @@ return (
 
                 <Link 
                     to=
-                      {`/viewPacking/${employee.id}`}
+                      {`/viewPacking/${employee._id}`}
                    
                     className="btn btn-danger"
                     style={{ marginLeft: '10px' }}

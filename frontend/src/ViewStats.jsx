@@ -23,10 +23,12 @@ const { id } = useParams();
 //   setAddStatus('present');
 //   setAddAttendanceModalVisible(true);
 // };
+
+
 const fetchEmployeeDetails = async (employeeId) => {
   try {
     const response = await axios.get(`http://localhost:8081/get/${employeeId}`);
-    return response.data.Result[0]; // Assuming the employee details are in Result array
+    return response.data.Result; // Assuming the employee details are in Result array
   } catch (error) {
     console.error(error);
     throw new Error('Error fetching employee details');
@@ -36,6 +38,8 @@ const fetchEmployeeDetails = async (employeeId) => {
 
 const handleOpenAddAttendanceModal = async (day) => {
   try {
+
+    console.log(id);
     const employeeDetails = await fetchEmployeeDetails(id);
 
     const joiningDate = employeeDetails.date; // Replace 'date' with the actual column name
@@ -47,12 +51,10 @@ const handleOpenAddAttendanceModal = async (day) => {
     setAddYear(selectedYear);
     setAddStatus('present');
 
-    // Compare selected date with joining date
-    if (new Date(`${selectedYear}-${selectedMonth}-${day}`) < new Date(joiningDate)) {
-      // Show an alert if the selected date is before the joining date
+    const selectDateStr=new Date(`${selectedYear}-${selectedMonth}-${day}`).toLocaleDateString('en-GB');
+    if ( new Date(selectDateStr)< new Date(joiningDateStr)) {
       alert(`Selected date is before the ${employeeData.name}'s  joining date : ${joiningDateStr}!`);
     } else {
-      // Open the modal if the selected date is after or equal to the joining date
       setAddAttendanceModalVisible(true);
     }
   } catch (error) {
@@ -60,7 +62,6 @@ const handleOpenAddAttendanceModal = async (day) => {
     // Handle the error as needed
   }
 };
-
 
 const handleOpenEditAttendanceModal = async(day) => {
   // Set initial values for the form based on the clicked day
@@ -118,9 +119,10 @@ const handleAddAttendance = async (e) => {
 
     // Make a POST request to submit the attendance
     const response = await axios.post(`http://localhost:8081/submitAttendance/${id}`, data);
-
+    
+    console.log("RRRR",response);
     // Check the response and handle it accordingly
-    if (response.data.success) {
+    if (response.data.Status==='Success') {
       // Attendance successfully submitted
       console.log('Attendance submitted successfully');
       // Optionally, you can perform additional actions, such as updating the UI
@@ -209,7 +211,7 @@ const handleEditAttendance = async (e) => {
 
   useEffect(() => {
     axios.get(`http://localhost:8081/get/${id}`)
-      .then(res => setEmployeeData(res.data.Result[0]))
+      .then(res => setEmployeeData(res.data.Result))
       .catch(err => console.error(err));
   }, [id]);
 
@@ -217,6 +219,13 @@ const handleEditAttendance = async (e) => {
         e.preventDefault();
         console.log(selectedMonth);
         console.log(selectedYear);
+        const isValidYear = selectedYear >= 1950 && selectedYear <= 2070;
+
+        if (!isValidYear) {
+            alert("Enter a year in 1950-2070 range ");
+            return; // Exit the function early
+        }
+
         try {
           
           const numericMonth = monthNames.indexOf(selectedMonth) + 1;

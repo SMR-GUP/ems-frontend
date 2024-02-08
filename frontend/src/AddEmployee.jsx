@@ -42,18 +42,32 @@ function AddEmployee() {
     
     const navigate=useNavigate()
 
-    const handleSubmit =(event)=>{
-        event.preventDefault();
-        console.log("Data entered  ",data);
+    // const handleSubmit =(event)=>{
+    //     event.preventDefault();
+    //     console.log("Data entered  ",data);
+    //     axios.post('http://localhost:8081/create',data)
+    //     .then(res =>{
+    //             navigate('/employee')
+    //     })
+    //     .catch(err=>console.log(err));
+    // }
 
+    const handleSubmit = (event) => {
+      event.preventDefault();
+  
+      if (!data.name  || !data.weekday || !data.joiningDate) {
+          alert("Please enter all the details to add the employee");
+          return; 
+      }
+      console.log("Dataaa  ",data);
+        axios.post('http://localhost:8081/create', data)
+          .then(res => {
+              navigate('/employee');
+          })
+          .catch(err => console.log(err));
+  }
+  
 
-        axios.post('http://localhost:8081/create',data)
-        .then(res =>{
-                navigate('/employee')
-        })
-        .catch(err=>console.log(err));
-
-    }
 
   return (
     <div className='d-flex flex-column align-items-center pt-2 mt-3'>

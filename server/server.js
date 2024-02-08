@@ -1,218 +1,135 @@
-import express from 'express'
-import mysql from 'mysql'
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import multer from 'multer'
-import path from 'path'
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import { MongoClient } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 
+//database setup
 
-
-const app=express();
+const app = express();
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static('public'));
 
-const storage=multer.diskStorage({
-    destination:(req,file,cb) =>{
-            cb(null,'public/images')
-    },
-    filename:(req,file,cb) =>{
-        cb(null,file.fieldname + "_" + Date.now() + path.extname(file.originalname));
-    }
-})
+// MongoDB Connection
+const connectionString = 'mongodb+srv://smritig395:SMR2001@cluster0.m3ajeuh.mongodb.net/?retryWrites=true&w=majority';
+const client = new MongoClient(connectionString);
 
-const upload = multer({
-  storage:storage
-})
+let db;
 
-const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "signup"
-})
+(async () => {
+  try {
+    await client.connect();
+    db = client.db('ems');
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+  }
+})();
 
-con.connect(function(err){
-    if(err){
-        console.log("Error in Connection",err);
-    }
-
-    else
-    {
-        console.log("Connected");
-    }
-
-})
-
-
-app.get('/getEmployee' , (req,res) =>{
-    const sql="SELECT * FROM employee";
-    con.query(sql, (err,result)=>{
-        if(err)
-        {
-            return res.json({Error:"Get employee error in sql"});
-        }
-
-        return res.json({Status:"Success",Result:result});
-    })
-})
-
-
-app.get('/getSizes' , (req,res) =>{
-    const sql="SELECT * FROM sizes";
-    con.query(sql, (err,result)=>{
-        if(err)
-        {
-            return res.json({Error:"Get size error in sql"});
-        }
-
-        return res.json({Status:"Success",Result:result});
-    })
-})
+// Middleware
+app.use(bodyParser.json());
 
 
 
 
 
 
-app.post('/login',(req,res) =>{
-    const sql="SELECT * FROM users WHERE email = ? AND password = ?";
-    con.query(sql,[req.body.email,req.body.password], (err,result) =>{
-        if(err) return res.json({Status:"Error", Error:"Error in Running Query"});
-        if(result.length>0)
-        {
-            return res.json({Status:"Success"});
-        }
-        
-        else
-        {
-            return res.json({Status:"Error" , Error:"Wrong Email or Password"});
-        }
-    })
-})
+
+//employee apis
 
 
-app.put('/update/:id', (req, res) => {
-    const sql = "UPDATE employee SET name=?, date=?, day=?, salary=? WHERE id=?";
-    const values = [
-        req.body.name,
-        formatDate(req.body.joiningDate),      
-        req.body.weekday,
-        req.body.salary,
-        req.params.id
-    ];
-
-    con.query(sql, values, (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: "Error updating employee" });
-        }
-        return res.json({ Status: "Success" });
-    });
-});
-
-
-app.put('/updateAttendance/:id/:day/:month/:year', (req, res) => {
-    const sql = "UPDATE attendance SET status=? WHERE employee_id=? AND day=? AND month=? AND year=?";
-    const values = [
-      req.body.status,
-      req.params.id,
-      req.params.day,
-      req.params.month,
-      req.params.year
-    ];
+app.post('/create', async (req, res) => {
   
-    con.query(sql, values, (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.json({ error: "Error updating attendance" });
-      }
+    const newDocument = {
+      name: req.body.name,
+      date: formatDate(req.body.joiningDate),
+      day: req.body.weekday,
+      salary: req.body.salary
+    };
   
-      return res.json({ success: true, message: "Attendance updated successfully" });
-    });
+    try {
+      const result = await db.collection('employee').insertOne(newDocument);
+      res.status(201).json({ status: 'Success' });
+    } catch (error) {
+      console.error('Error adding entry:', error);
+      res.status(500).json({ error: 'Could not add entry' });
+    }
   });
-
-  app.put('/updateSizeEntry/:id',(req,res) =>{
-    const sql = "UPDATE sizes SET sizeno=? ,sizecode=?  WHERE id=?";
-    const values =[
-        req.body.sizeno,
-        req.body.sizecode,
-        req.params.id,
-    ];
-
-    con.query(sql, values, (err, result) => {
-        if (err) {
-          console.error(err);
-          return res.json({ error: "Error updating size entry" });
-        }
-    
-        return res.json({ success: true, message: "Size Entry updated successfully" });
-      });
-  })
-
-
-  app.put('/updateProgress/:id/:day/:month/:year/:quantity/:sizeno/:value/:packed', (req, res) => {
-    // console.log("API called");
-    const sql = "UPDATE progress SET quantity=? ,sizeno=? ,value=?, packed=? WHERE emp_id=? AND day=? AND month=? AND year=? AND quantity=? AND sizeno=? AND value=? AND packed=?";
-    const values = [
-        req.body.quantity,
-        req.body.sizeno,
-        req.body.value,
-        req.body.packed,
-      req.params.id,
-      req.params.day,
-      req.params.month,
-      req.params.year,
-      req.params.quantity,  // Match the existing values in the WHERE clause
-      req.params.sizeno,
-      req.params.value,
-      req.params.packed,
-    ];
-  
-    con.query(sql, values, (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.json({ error: "Error updating progress" });
-      }
-  
-      return res.json({ success: true, message: "Progress updated successfully" });
-    });
-  });
-
-
   
 
-app.get('/get/:id', (req, res) => {
+
+app.get('/getEmployee', async (req, res) => {
+    try {
+        const result = await db.collection('employee').find().toArray();
+        return res.json({ status: 'Success', Result: result });
+    } catch (error) {
+        console.error('Error retrieving employees:', error);
+        return  res.status(500).json({ error: 'Could not retrieve employees' });
+    }
+});
+
+
+app.get('/get/:id', async (req, res) => {
     const employeeId = req.params.id;
 
-    const sql = 'SELECT * FROM employee WHERE id = ?';
-    con.query(sql, [employeeId], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: 'Error getting employee details' });
+    try {
+        const result = await db.collection('employee').findOne({ _id: new ObjectId(employeeId) });
+        if (!result) {
+            return res.status(404).json({ error: 'Employee not found' });
         }
-
         return res.json({ Result: result });
-    });
+    } catch (error) {
+        console.error('Error getting employee details:', error);
+        return res.status(500).json({ error: 'Error getting employee details' });
+    }
 });
 
 
-app.get('/getDayAttendance/:id/:year/:month/:day', (req, res) => {
-    const { id,year, month, day } = req.params;
+app.put('/update/:id', async (req, res) => {
+    const employeeId = req.params.id;
 
-    const sql = 'SELECT * FROM attendance WHERE employee_id=? AND YEAR = ? AND MONTH = ? AND DAY = ?';
-    con.query(sql, [id,year, month, day], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: 'Error getting day-wise attendance details' });
+    try {
+        const result = await db.collection('employee').updateOne(
+            { _id: new ObjectId(employeeId) }, // Filter by employee ID
+            { $set: {
+                name: req.body.name,
+                date: formatDate(req.body.joiningDate),
+                day: req.body.weekday,
+                salary: req.body.salary
+            }}
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ error: 'Employee not found' });
         }
 
-        return res.json({ Result: result });
-    });
+        return res.json({ Status: 'Success' });
+    } catch (error) {
+        console.error('Error updating employee:', error);
+        return res.status(500).json({ error: 'Error updating employee' });
+    }
+});
+
+app.delete('/delete/:id', async (req, res) => {
+    const employeeId = req.params.id;
+    
+    try {
+        const result = await db.collection('employee').deleteOne({ _id: new ObjectId(employeeId) });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Employee not found' });
+        }
+
+        return res.json({ Status: 'Success' });
+    } catch (error) {
+        console.error('Error deleting employee:', error);
+        return res.status(500).json({ error: 'Error deleting employee' });
+    }
 });
 
 
@@ -220,252 +137,363 @@ app.get('/getDayAttendance/:id/:year/:month/:day', (req, res) => {
 
 
 
-app.delete('/delete/:id', (req, res) => {
-    const id = req.params.id;
-    const sql = "Delete FROM employee WHERE id = ?";
-    con.query(sql, [id], (err, result) => {
-        if(err) return res.json({Error: "delete employee error in sql"});
-        return res.json({Status: "Success"})
-    })
+//sizes api
+
+app.get('/getSizes' , async(req,res) =>{
+    try {
+        const result = await db.collection('sizes').find().toArray();
+        return res.json({ status: 'Success', Result: result });
+    } catch (error) {
+        console.error('Error retrieving sizes:', error);
+        return  res.status(500).json({ error: 'Could not retrieve employees' });
+    }
 })
 
 
+app.post('/addsize', async (req, res) => {
+    try {
+        const result = await db.collection('sizes').insertOne({
+            sizeno: req.body.sizeno,
+            sizecode: req.body.sizecode
+        });
 
-app.delete('/deleteSizeEntry/:id', (req, res) => {
-    const id = req.params.id;
-    const sql = "Delete FROM sizes WHERE id = ?";
-    con.query(sql, [id], (err, result) => {
-        if(err) return res.json({Error: "delete size error in sql"});
-        return res.json({Status: "Success"})
-    })
-})
-
-
-
-app.delete('/deleteProgress/:id/:month/:day/:year/:quantity/:sizeno/:value/:packed', (req, res) => {
-    const id = req.params.id;
-    const month = req.params.month;
-    const day = req.params.day;
-    const year = req.params.year;
-    const quantity = req.params.quantity;
-    const sizeno = req.params.sizeno;
-    const value = req.params.value;
-    const packed = req.params.packed;
-
-    // console.log(id+"  "+day+"  "+month+"  "+year);
-
-    const sql = "DELETE FROM progress WHERE emp_id = ? AND month = ? AND day = ?  AND year = ? AND quantity = ? AND sizeno = ? AND value = ? AND packed = ?";
-    
-    con.query(sql, [id, day, month, year,quantity,sizeno,value,packed], (err, result) => {
-        if (err) return res.json({ Error: "Delete progress error in SQL" });
-
-        // if (result.affectedRows === 0) {
-        //     // No matching record found
-        //     return res.json({ Status: "No matching record found for deletion" });
-        // }
-
-        return res.json({ Status: "Success" });
-    });
+        if (result.insertedCount === 1) {
+            return res.json({ Status: "Size entry added successfully" });
+        } else {
+            return res.json({ Error: "Error adding size entry" });
+        }
+    } catch (error) {
+        console.error('Error adding size entry:', error);
+        return res.status(500).json({ Error: "Error adding size entry" });
+    }
 });
 
 
-app.post('/submitAttendance/:id',async (req, res) => {
-    // console.log("Requesttttt",req.body);
-    const sql= "INSERT INTO attendance (`employee_id`,`month`,`day`,`year`,`status`) VALUES (?)";
-    const values = [
-        req.params.id,
-        req.body.month,
-        req.body.day,
-        req.body.year,
-        req.body.status
-    ];
-    console.log("Answer",values);
-    con.query(sql,[values],(err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: "Error in adding attendance" });
+app.put('/updateSizeEntry/:id', async (req, res) => {
+    try {
+        const result = await db.collection('sizes').updateOne(
+            { _id: new ObjectId(req.params.id) }, // Filter by size entry ID
+            { $set: {
+                sizeno: req.body.sizeno,
+                sizecode: req.body.sizecode
+            }}
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ error: 'Size entry not found' });
         }
-        return res.json({ Status: "Success" });
-    });
+
+        return res.json({ success: true, message: 'Size entry updated successfully' });
+    } catch (error) {
+        console.error('Error updating size entry:', error);
+        return res.status(500).json({ error: 'Error updating size entry' });
+    }
 });
 
 
-app.post('/submitProgress/:id',async (req, res) => {
-    console.log("Requesttttt",req.body);
-    const sql= "INSERT INTO progress (`emp_id`,`month`,`day`,`year`,`quantity`,`sizeno`,`value`,`packed`) VALUES (?)";
-    const values = [
-        req.params.id,
-        req.body.month,
-        req.body.day,
-        req.body.year,
-        req.body.quantity,
-        req.body.sizeno,
-        req.body.value,
-        req.body.packed
-    ];
-    console.log("Answer",values);
-    con.query(sql,[values],(err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: "Error in adding progress" });
+app.delete('/deleteSizeEntry/:id', async (req, res) => {
+    try {
+        const result = await db.collection('sizes').deleteOne({ _id: new ObjectId(req.params.id) });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Size entry not found' });
         }
-        return res.json({ Status: "Success" });
-    });
+
+        return res.json({ Status: 'Success' });
+    } catch (error) {
+        console.error('Error deleting size entry:', error);
+        return res.status(500).json({ error: 'Error deleting size entry' });
+    }
 });
 
-
-app.get('/getAttendance/:id', (req, res) => {
-    const employeeId = req.params.id;
-    const { month, year } = req.query;
-    const sql = 'SELECT * FROM attendance WHERE employee_id = ? AND month = ? AND year = ?';
-    con.query(sql, [employeeId, month, year], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: 'Error getting employee details' });
-        }
-
-        return res.json({ Result: result });
-    });
-});
-
-
-app.get('/getPacking/:packed', (req, res) => {
-    const { packed } = req.params;
-    const { month, year } = req.query;
-    const sql = 'SELECT * FROM progress WHERE packed = ? AND month = ? AND year = ?';
-
-    con.query(sql, [packed, month, year], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: 'Error getting packing details' });
-        }
-
-        return res.json({ Result: result });
-    });
-});
-
-
-app.get('/getProgress/:id', (req, res) => {
-    const employeeId = req.params.id;
-    const { month, year } = req.query;
-    const sql = 'SELECT * FROM progress WHERE emp_id = ? AND month = ? AND year = ?';
-    con.query(sql, [employeeId, month, year], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: 'Error getting employee details' });
-        }
-
-        return res.json({ Result: result });
-    });
-});
-
-
-app.get('/getDayProgress/:id/:day/:month/:year', (req, res) => {
-    const emp_id = req.params.id;
-    const { day, month, year } = req.params;
-    // console.log(day+" "+month+" "+year+" "+emp_id+"Valueeesss");
-    const sql = 'SELECT * FROM progress WHERE emp_id = ? AND day = ? AND month = ? AND year = ?';
-    con.query(sql, [emp_id, day, month, year], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: 'Error getting progress details' });
-        }
-
-        return res.json({ Result: result });
-    });
-});
-
-
-
-
-app.get('/getDayPacking/:packed/:day/:month/:year', (req, res) => {
-    const packed = req.params.packed;
-    const { day, month, year } = req.params;
-    const sql = 'SELECT * FROM progress WHERE packed = ? AND day = ? AND month = ? AND year = ?';
-    con.query(sql, [packed, day, month, year], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: 'Error getting packing details' });
-        }
-
-        return res.json({ Result: result });
-    });
-});
-
-
-
-
-
-app.get('/getStatus/:id',(req,res)=> {
-    const employeeId=req.params.id;
-    const {month,year,day}=req.query;
-    const sql='SELECT * FROM attendance WHERE employee_id = ? AND month = ? AND year = ? AND day=?';
-    con.query(sql,[employeeId,month,year,day],(err,result)=>{
-        if(err){
-            console.error('Error in quering database',err);
-            return res.json({Error:'Error in fetching details'});
-        }
-        else
-        {
-            const status = result.length > 0 ? result[0].status : 'Not Marked';
-            return res.json({ status });
-        }
-    })
-});
-
-app.get('/getSalary/:id', (req, res) => {
+app.get('/getSalary/:id', async (req, res) => {
     const employeeId = req.params.id;
 
-    const sql = 'SELECT * FROM employee WHERE id = ?';
-    con.query(sql, [employeeId], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.json({ Error: 'Error getting employee details' });
-        }
+    try {
+        const result = await db.collection('employee').findOne({ _id: new ObjectId(employeeId) });
 
-        if (result.length === 0) {
+        if (!result) {
             return res.json({ Error: 'Employee not found' });
         }
 
-        const salary = result[0].salary;
+        const salary = result.salary;
         return res.json({ Salary: salary });
-    });
+    } catch (error) {
+        console.error('Error getting employee details:', error);
+        return res.status(500).json({ Error: 'Error getting employee details' });
+    }
 });
 
-app.post('/create', (req,res) => {
-    const sql="INSERT INTO employee (`name`,`date`,`day`,`salary`) VALUES(?)";
-    const values = [
-        req.body.name,
-        formatDate(req.body.joiningDate),      
-        req.body.weekday,
-        req.body.salary,
-    ]
-    con.query(sql, [values], (err, result) => {
-        if(err) {
-            console.error(err);
-            return res.json({Error: "Inside singup query"});
+
+
+//attendance apis
+
+app.get('/getAttendance/:id', async (req, res) => {
+    const employeeId = req.params.id;
+    const { month, year } = req.query;
+
+    try {
+        const result = await db.collection('attendance').find({
+            employee_id: employeeId,
+            month: month,
+            year: year
+        }).toArray();
+
+        return res.json({ Result: result });
+    } catch (error) {
+        console.error('Error getting attendance:', error);
+        return res.status(500).json({ error: 'Error getting attendance' });
+    }
+});
+
+
+app.get('/getDayAttendance/:id/:year/:month/:day', async (req, res) => {
+    const { id, year, month, day } = req.params;
+
+    try {
+        const result = await db.collection('attendance').find({
+            employee_id: id,
+            year:(year),
+            month: (month),
+            day: parseInt(day)
+        }).toArray();
+
+        return res.json({ Result: result });
+    } catch (error) {
+        console.error('Error getting day-wise attendance:', error);
+        return res.status(500).json({ error: 'Error getting day-wise attendance details' });
+    }
+});
+
+
+app.post('/submitAttendance/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { month, day, year, status } = req.body;
+
+        const result = await db.collection('attendance').insertOne({
+            employee_id: id,
+            month: month,
+            day: day,
+            year: year,
+            status: status
+        });
+
+        return res.json({ Status: 'Success' });
+    } catch (error) {
+        console.error('Error adding attendance:', error);
+        return res.status(500).json({ Error: 'Error in adding attendance' });
+    }
+});
+
+
+app.put('/updateAttendance/:id/:day/:month/:year', async (req, res) => {
+    try {
+        const { id, day, month, year } = req.params;
+        const { status } = req.body;
+
+        const result = await db.collection('attendance').updateOne(
+            { 
+                employee_id: id, 
+                day: parseInt(day), 
+                month: (month), 
+                year: (year) 
+            },
+            { $set: { status: status } }
+        );
+
+        if (result.modifiedCount !== 1) {
+            throw new Error('Failed to update attendance');
         }
-        return res.json({Status: "Success"});
-    })
-})
 
-app.post('/addsize', (req, res) => {
-    const sql = "INSERT INTO sizes (`sizeno`, `sizecode`) VALUES (?, ?)";
-    const values = [
-      req.body.sizeno,
-      req.body.sizecode
-    ];
-  
-    con.query(sql, values, (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.json({ Error: "Error in size entry query" });
-      }
-      return res.json({ Status: "Size entry added successfully" });
-    });
-  });
-  
+        return res.json({ success: true, message: "Attendance updated successfully" });
+    } catch (error) {
+        console.error('Error updating attendance:', error);
+        return res.status(500).json({ error: "Error updating attendance" });
+    }
+});
 
+
+
+
+//progress apis
+
+
+app.post('/submitProgress/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { month, day, year, quantity, sizeno, value, packed } = req.body;
+
+        const result = await db.collection('progress').insertOne({
+            emp_id: id,
+            month: month,
+            day: day,
+            year: year,
+            quantity: quantity,
+            sizeno: sizeno,
+            value: value,
+            packed: packed
+        });
+
+        if (result.insertedCount === 1) {
+            return res.json({ Status: "Progress added successfully" });
+        } else {
+            return res.json({ Error: "Error adding progress entry" });
+        }    } 
+        catch (error) {
+        console.error('Error adding progress:', error);
+        return res.status(500).json({ Error: 'Error in adding progress' });
+    }
+});
+
+
+
+
+
+app.get('/getProgress/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { month, year } = req.query;
+
+        const result = await db.collection('progress').find({
+            emp_id: id,
+            month: month,
+            year: year
+        }).toArray();
+
+        return res.json({ Result: result });
+    } catch (error) {
+        console.error('Error getting progress:', error);
+        return res.status(500).json({ Error: 'Error getting progress details' });
+    }
+});
+
+
+app.get('/getDayProgress/:id/:day/:month/:year', async (req, res) => {
+    try {
+        const { id, day, month, year } = req.params;
+
+        const result = await db.collection('progress').find({
+            emp_id: id,
+            day: parseInt(day),
+            month: month,
+            year: year
+        }).toArray();
+
+        return res.json({ Result: result });
+    } catch (error) {
+        console.error('Error getting day-wise progress:', error);
+        return res.status(500).json({ Error: 'Error getting day-wise progress details' });
+    }
+});
+
+
+app.put('/updateProgress/:emp_id/:id', async (req, res) => {
+    try {
+        const { emp_id, id } = req.params;
+        const { quantity, sizeno, value, packed } = req.body;
+
+        const result = await db.collection('progress').updateOne(
+            { emp_id: emp_id, _id: new ObjectId(id) },
+            { $set: { quantity: quantity, sizeno: sizeno, value: value, packed: packed } }
+        );
+
+        console.log("Resultt    ",result);
+        return res.json({ success: true, message: "Progress updated successfully" });
+
+    } catch (error) {
+        console.error('Error updating progress:', error);
+        return res.status(500).json({ error: "Error updating progress" });
+    }
+});
+
+app.delete('/deleteProgress/:emp_id/:id', async (req, res) => {
+    try {
+        const emp_id = req.params.emp_id;
+        const id = req.params.id;
+
+        const result = await db.collection('progress').deleteOne({
+            emp_id: emp_id,
+            _id: new ObjectId(id) 
+        });
+
+        console.log("Result: ", result);
+
+        if (result.deletedCount === 0) {
+            return res.json({ Error: "Progress not found" });
+        }
+
+        return res.json({ Status: "Success" });
+    } catch (error) {
+        console.error('Error deleting progress:', error);
+        return res.status(500).json({ Error: "Delete progress error in MongoDB" });
+    }
+});
+
+
+
+//packing apis
+
+app.get('/getPacking/:packed', async (req, res) => {
+    try {
+        const { packed } = req.params;
+        const { month, year } = req.query;
+
+        const result = await db.collection('progress').find({
+            packed: packed,
+            month: month,
+            year: year
+        }).toArray();
+        
+
+        return res.json({ Result: result });
+    } catch (error) {
+        console.error('Error getting packing details:', error);
+        return res.status(500).json({ Error: 'Error getting packing details' });
+    }
+});
+
+
+app.get('/getDayPacking/:packed/:day/:month/:year', async (req, res) => {
+    try {
+        const { packed, day, month, year } = req.params;
+
+        const result = await db.collection('progress').find({
+            packed: packed,
+            day: parseInt(day), // Convert day to a number if needed
+            month: month,
+            year: year
+        }).toArray();
+
+        return res.json({ Result: result });
+    } catch (error) {
+        console.error('Error getting packing details:', error);
+        return res.status(500).json({ Error: 'Error getting packing details' });
+    }
+});
+
+
+
+
+
+//user api
+
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await db.collection('users').findOne({ email: email, password: password });
+
+        if (user) {
+            return res.json({ Status: "Success" });
+        } else {
+            return res.json({ Status: "Error", Error: "Wrong Email or Password" });
+        }
+    } catch (error) {
+        console.error('Error in running query:', error);
+        return res.status(500).json({ Status: "Error", Error: "Error in Running Query" });
+    }
+});
 
 
 
@@ -478,6 +506,10 @@ function formatDate(dateString) {
     return `${year}-${month}-${day}`;
 }
 
-app.listen(8081, ()=> {
-    console.log("Running");
-})
+
+
+const PORT = process.env.PORT || 8081;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+

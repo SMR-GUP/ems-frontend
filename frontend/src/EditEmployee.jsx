@@ -23,7 +23,7 @@ function EditEmployee() {
     // Fetch employee details based on the id
     axios.get(`http://localhost:8081/get/${id}`)
       .then(res => {
-        const employeeData = res.data.Result[0];
+        const employeeData = res.data.Result;
         setEmployee({
           name: employeeData.name,
           salary: employeeData.salary,
@@ -33,6 +33,8 @@ function EditEmployee() {
       })
       .catch(err => console.error(err));
   }, [id]);
+
+
 
   const handleDateChange = date => {
     setEmployee(prevEmployee => ({
@@ -65,6 +67,7 @@ function EditEmployee() {
 
   return (
     <div className="edit-employee-body">
+      <h3 style={{textAlign:'center',color:'green',fontWeight:'bold'}}>Update Employee Details</h3>
     <form onSubmit={handleSubmit} className="edit-employee-container">
       <div>
         <label className="edit-employee-label">Name:</label>

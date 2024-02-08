@@ -52,7 +52,7 @@ function SizeEntry(){
       };
 
       const editSizeEntry = () => {
-        axios.put(`http://localhost:8081/updateSizeEntry/${selectedSize.id}`, {
+        axios.put(`http://localhost:8081/updateSizeEntry/${selectedSize._id}`, {
           sizeno: sizeName,
           sizecode: sizeValue,
         })
@@ -75,7 +75,7 @@ function SizeEntry(){
     
         if (isConfirmed) {
           // If user confirms, proceed with deletion
-          axios.delete(`http://localhost:8081/deleteSizeEntry/${size.id}`)
+          axios.delete(`http://localhost:8081/deleteSizeEntry/${size._id}`)
             .then(response => {
               console.log('Server Response:', response.data);
               window.location.reload();
@@ -95,11 +95,14 @@ function SizeEntry(){
         axios.get('http://localhost:8081/getSizes')
           .then(response => {
             setSizes(response.data.Result);
+            console.log("sizess  data   ",sizes);
           })
           .catch(error => {
             console.error('Error fetching sizes:', error);
           });
       }, []);
+
+
 
     return (
         <div className='size-table mt-3 mx-auto'>

@@ -22,7 +22,7 @@ function Dashboard() {
                     </li>
                     <li>
                         <Link to="/" data-bs-toggle="collapse" class="nav-link px-0 align-middle  text-white">
-                            <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Progress Tracker</span> </Link>
+                            <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Daily Entry</span> </Link>
                     </li>
                     <li>
                         <Link to="/attendance" class="nav-link px-0 align-middle  text-white">

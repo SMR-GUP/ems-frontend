@@ -8,6 +8,8 @@ function Employee() {
 
 
     const handleDelete = (id) => {
+
+        console.log("Iddd  ",id);
         const confirmDelete = window.confirm('Are you sure you want to delete this employee???');
         if (confirmDelete) {
             axios.delete('http://localhost:8081/delete/' + id)
@@ -27,13 +29,12 @@ function Employee() {
     useEffect(()=> {
         axios.get('http://localhost:8081/getEmployee')
         .then(res =>{
-            if(res.data.Status=="Success")
+            if(res.data.status==="Success")
             {
                 setData(res.data.Result);
             }
         })
         .catch(err =>(console.log(err)))
-
     },[])
 
 
@@ -46,7 +47,7 @@ function Employee() {
             Add Employee
         </Link>
         <div className='mt-3'>
-        <table className='table'>
+        <table className='table' style={{ textAlign: 'center' }}>
             <thead>
                 <tr>
                     <th>Name </th>
@@ -71,7 +72,7 @@ function Employee() {
                     }</td> */}
                 <td>
                 <Link 
-  to={`/employeeEdit/${employee.id}`} 
+  to={`/employeeEdit/${employee._id}`} 
   className='btn btn-sm btn-info mr-5' 
   style={{
     color:'white',
@@ -84,7 +85,7 @@ function Employee() {
 >
   Edit
 </Link>
-        <button onClick={e => handleDelete(employee.id)} className='btn btn-sm btn-danger ' style={{marginLeft:'5px'}}>Delete</button>
+        <button onClick={e => handleDelete(employee._id)} className='btn btn-sm btn-danger ' style={{marginLeft:'5px'}}>Delete</button>
                 </td>
             </tr>
         );
