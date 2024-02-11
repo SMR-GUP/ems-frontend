@@ -1,18 +1,20 @@
 /* Add this CSS to your existing styles or in a <style> tag */
 
 .login-container {
-  background-image: url('https://d.newsweek.com/en/full/1933008/candles-surrounded-christmas-decorations.jpg');
+  background-image: url('https://wallpapers.com/images/hd/candles-in-a-snowy-place-rkr2faj0xmefzxab.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  width:1366px;
   overflow: hidden;
 }
 
   
   .loginForm {
     background-color: rgba(0, 0, 0, 0.4);
-    margin-right: 790px;
+    margin-right: 760px;
+    width:100%;
+    margin-left: 20px;
+
    
   }
   

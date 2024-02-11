@@ -12,6 +12,10 @@ import NewAttendance from './NewAttendance'
 import AddProgress from './AddProgress'
 import ViewPacking from './ViewPacking'
 import SizeEntry from './SizeEntry'
+import MonthlyData from './MonthlyData'
+import ProductionData from './ProductionData'
+import PackingData from './PackingData'
+
 
 function App() {
   return (
@@ -29,7 +33,9 @@ function App() {
       <Route path='/addProgress/:id' element={<AddProgress/>}></Route>
       <Route path='/viewPacking/:id' element={<ViewPacking/>}></Route>
       <Route path='/sizes' element={<SizeEntry />}> </Route>
-
+      <Route path='/monthly' element={<MonthlyData />}> </Route>
+      <Route path='/productionData/:id' element={<ProductionData />}> </Route>
+      <Route path='/packingData/:id' element={<PackingData />}> </Route>
 
 
       </Route>

@@ -24,7 +24,7 @@ axios.post('http://localhost:8081/login',values)
       navigate('/');
   }
   else{
-        setError(res.data.Error);
+    alert('Wrong Admin name or Password!');
   }
 })
 .catch(err => console.log(err));
@@ -32,23 +32,22 @@ axios.post('http://localhost:8081/login',values)
 
   return (
     <div className='login-container'>
-    <div className='vh-100 d-flex justify-content-center align-items-center'>
+    <div className='vh-100 d-flex justify-content-center align-items-center' style={{width:"100%"}}>
       <div className='p-3 rounded loginForm' >
         <div className='text-danger'>
           {error && error}
         </div>
-        <h2 className="text-center" style={{color:'white'}}>Login</h2>
+        <h2 className="text-center" style={{color:'white',fontFamily: "Open Sans, sans-serif"}}>Login</h2>
         <form  onSubmit={handleSubmit}>
           <div className='mb-3' >
-            <label htmlFor="email" style={{color:'white'}}><>Admin</></label>
+            <label htmlFor="email" style={{color:'white',fontFamily: "Open Sans, sans-serif"}}><>ADMIN</></label>
             <input type="name" placeholder='Enter Admin Name' name='email' onChange={e => setValues({...values , email: e.target.value })} className='form-control rounded-0' autoComplete='off'/>
           </div>
           <div className='mb-3' >
-            <label htmlFor="password" style={{color:'white'}}><>Password</></label>
+            <label htmlFor="password" style={{color:'white',fontFamily: "Open Sans, sans-serif"}}><>PASSWORD</></label>
             <input type="password" placeholder='Enter Password' name='password' onChange={e => setValues({...values ,password: e.target.value })} className='form-control rounded-0' />
           </div>
-          <button type='submit' className='btn btn-success w-100 rounded-0'> Log in</button>
-          <p className="text-center mt-3" style={{color:'white'}}>You agree to our terms and policies</p>
+          <button type='submit' className='btn btn-success w-100 rounded-2' style={{fontFamily:'Roboto ,sans-serif'}}> Log in</button>
         </form>
       </div>
     </div>

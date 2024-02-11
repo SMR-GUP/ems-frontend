@@ -67,7 +67,7 @@ function EditEmployee() {
 
   return (
     <div className="edit-employee-body">
-      <h3 style={{textAlign:'center',color:'green',fontWeight:'bold'}}>Update Employee Details</h3>
+      <h3 style={{textAlign:'center',color:'#3399ff',fontWeight:'bold',fontFamily:'Roboto ,sans-serif'}}>Update Employee Details</h3>
     <form onSubmit={handleSubmit} className="edit-employee-container">
       <div>
         <label className="edit-employee-label">Name:</label>

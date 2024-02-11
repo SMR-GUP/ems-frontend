@@ -4,7 +4,7 @@
     padding: 20px;
     background-color: #efd7f1;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(222, 247, 5, 0.1);
+    box-shadow: 15px 10px 14px  rgba(243, 231, 59, 0.1);
   }
   
   .select-container {
@@ -50,25 +50,30 @@
   
   .attendance-table {
     border-collapse: collapse;
-    width: 100%;
-   
+    width: 100%; /* Adjusting width to fit within the margins */
+
   }
   
   .attendance-table th, .attendance-table td {
-    border: 1px solid #dddddd;
-    text-align: left;
+    text-align: center;
     padding: 8px;
+    border: 1px solid #e0e0d1; /* Added border property */
+    border-radius: 5px;
   }
   
   .attendance-table th {
-    background-color: #f2f2f2;
+    background-color: #dab3ff;
   }
   
   .attendance-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #d9ffcc;
+  }
+
+  .attendance-table tr:nth-child(odd) {
+    background-color: #ffffcc;
   }
   .present-status {
-    color: green;
+    color: #00cc00;
     font-weight: bolder;
   }
   
@@ -80,8 +85,8 @@
   
 
   .notmarked-status {
-    color: black;
-    font-weight: bolder;
+    color: rgb(12, 11, 12);
+    font-weight: 500;
   }
   
   /* .add-attendance-modal {
@@ -209,6 +214,50 @@
   
   .edit-attendance-modal button:hover {
     background-color: #eea94e; /* Darker green on hover */
+  }
+  
+
+
+
+  .mark-table {
+    border-collapse: collapse;
+    width: 100%; /* Adjusting width to fit within the margins */
+
+  }
+  
+  .mark-table th, .mark-table td {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #8b8b8b; /* Added border property */
+    border-radius: 5px;
+  }
+  
+  .mark-table th {
+    background-color: #bff7e9;
+  }
+  
+  .mark-table tr:nth-child(even) {
+    background-color: #e8f7f3;
+  }
+
+  .mark-table tr:nth-child(odd) {
+    background-color: white;
+  }
+  .present-status {
+    color: #00b300;
+    font-weight: bolder;
+  }
+  
+  .absent-status {
+    color: red;
+    font-weight: bolder;
+
+  }
+  
+
+  .notmarked-status {
+    color: rgb(12, 11, 12);
+    font-weight: 500;
   }
   
   

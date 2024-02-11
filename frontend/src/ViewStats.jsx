@@ -51,10 +51,22 @@ const handleOpenAddAttendanceModal = async (day) => {
     setAddYear(selectedYear);
     setAddStatus('present');
 
-    const selectDateStr=new Date(`${selectedYear}-${selectedMonth}-${day}`).toLocaleDateString('en-GB');
-    if ( new Date(selectDateStr)< new Date(joiningDateStr)) {
-      alert(`Selected date is before the ${employeeData.name}'s  joining date : ${joiningDateStr}!`);
-    } else {
+    function normalizeDateToMidnight(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+  
+   const selectedDate=normalizeDateToMidnight(new Date(`${selectedYear}-${selectedMonth}-${day}`));
+   const joined=normalizeDateToMidnight(new Date(joiningDate));
+  if (
+    selectedDate < joined
+    
+  ) {
+    alert(
+      `Selected date is before the ${employeeData.name}'s  joining date : ${joiningDateStr}!`
+    );
+  }
+
+    else {
       setAddAttendanceModalVisible(true);
     }
   } catch (error) {
@@ -264,7 +276,7 @@ const handleEditAttendance = async (e) => {
   return (
     <div>
     <div className="view-stats-container">
-      <h3 style={{textAlign:'center'}}>Attendance Sheet</h3>
+      <h3 style={{textAlign:'center',fontWeight:'500',fontFamily: 'Roboto, sans-serif'}}>Attendance Sheet</h3>
       
       <form onSubmit={handleSubmit}>
         <div className="select-container">
@@ -306,15 +318,15 @@ const handleEditAttendance = async (e) => {
       
   </div>
    <div>
-   <h2  className="table-header" style={{textAlign:'center',marginTop:'30px',fontStyle:'italic'}}>Attendance Data for {employeeData.name}</h2>
-   <table className="attendance-table">
+   <h2  className="table-header" style={{textAlign:'center',marginTop:'30px',fontFamily: 'Roboto, sans-serif'}}>Attendance Data for {employeeData.name}</h2>
+   <table className="mark-table">
      <thead>
        <tr>
-         <th>Day</th>
-         <th>Month</th>
-         <th>Year</th>
-         <th>Status</th>
-         <th>Action</th>
+         <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif',width:'15%'}}>Day</th>
+         <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif',width:'20%'}}>Month</th>
+         <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif',width:'15%'}}>Year</th>
+         <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif',width:'25%'}}>Status</th>
+         <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif',width:'25%'}}>Action</th>
        </tr>
      </thead>
      <tbody>
@@ -324,17 +336,23 @@ const handleEditAttendance = async (e) => {
         // console.log("recorddd  ",day+" "+record);
   return (
     <tr key={day}>
-      <td>{record ? record.day : day}</td>
-      <td>{record ? record.month : selectedMonth}</td>
-      <td>{record ? record.year : selectedYear}</td>
-      <td className={record?.status === 'present' ? 'present-status' : (record?.status === 'absent' ? 'absent-status' : 'notmarked-status')}>
-        {record ? record.status : 'not-marked'}
+      <td style={{fontSize:'18px',fontFamily: 'Roboto, sans-serif'}}>{record ? record.day : day}</td>
+      <td style={{fontFamily: 'Roboto, sans-serif',fontSize:'19px'}}>{record ? record.month : selectedMonth}</td>
+      <td style={{fontFamily: 'Roboto, sans-serif',fontSize:'19px'}}>{record ? record.year : selectedYear}</td>
+      <td  style={{fontSize:'20px',fontFamily: 'Roboto, sans-serif'}} className={record?.status === 'present' ? 'present-status' : (record?.status === 'absent' ? 'absent-status' : 'notmarked-status')}>
+        {record ?record.status : 'not-marked'}
       </td>
       <td>
         {!record? (
-          <button className="btn btn-warning" style={{ color: 'white' }} onClick={() => handleOpenAddAttendanceModal(day)}>Add</button>
+          // <button className="btn btn-warning" style={{ color: 'white' }} onClick={() => handleOpenAddAttendanceModal(day)}>Add</button>
+          <button className="btn btn-warning" onClick={() => handleOpenAddAttendanceModal(day)}>
+<i style={{fontSize:'21px'}} class="bi bi-calendar-plus"></i>
+</button>
+
         ) : (
-          <button className="btn btn-info" style={{ color: 'white' }} onClick={() => handleOpenEditAttendanceModal(day)}>Edit</button>
+          <button className="btn btn-primary" style={{ color: 'white' }} onClick={() => handleOpenEditAttendanceModal(day)}>
+<i  style={{fontSize:'21px'}}  class="bi bi-pencil"></i>          
+ </button>
           // or you can choose to render nothing here (empty JSX)
         )}
       </td>
@@ -398,16 +416,16 @@ const handleEditAttendance = async (e) => {
   backgroundColor: '#f9f9f9',
   boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
 }}>
-  <p style={{ margin: '0', fontWeight: 'bold', fontSize: '25px' ,color:'blue'}}>
+  <p style={{ margin: '0', fontWeight: 'bold', fontSize: '25px' ,color:'blue',fontFamily: 'Roboto, sans-serif'}}>
     Salary for the selected month and year for employee:
   </p>
-  <p style={{ margin: '0', fontSize: '18px',fontWeight: 'bold'}}>
+  <p style={{ margin: '0', fontSize: '18px',fontWeight: 'bold',fontFamily: 'Roboto, sans-serif'}}>
     Total Salary: {salary}
   </p>
-  <p style={{ margin: '0', fontSize: '18px',fontWeight: 'bold' }}>
+  <p style={{ margin: '0', fontSize: '18px',fontWeight: 'bold',fontFamily: 'Roboto, sans-serif' }}>
     Number of Present Days: {presentCount}
   </p>
-  <p style={{ margin: '0', fontSize: '18px' ,fontWeight: 'bold'}}>
+  <p style={{ margin: '0', fontSize: '18px' ,fontWeight: 'bold',fontFamily: 'Roboto, sans-serif'}}>
     Per Day Salary: {perDaySalary}
   </p>
   

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function AddProgress() {
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -158,17 +161,25 @@ const calculateTotalValue = () => {
       setAddMonth(selectedMonth);
       setAddYear(selectedYear);
       setAddPacked("not packed");
-      setAddSizeno("no value assigned");
-      setAddValue("0");
-      setAddQuantity("0");
-      if (
-        new Date(`${selectedYear}-${selectedMonth}-${day}`).toLocaleDateString('en-GB') <
-        new Date(joiningDate).toLocaleDateString('en-GB')
-      ) {
-        alert(
-          `Selected date is before the ${employeeData.name}'s  joining date : ${joiningDateStr}!`
-        );
-      } else {
+      setAddSizeno("");
+      setAddValue("");
+      setAddQuantity("");
+
+
+      function normalizeDateToMidnight(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+    
+     const selectedDate=normalizeDateToMidnight(new Date(`${selectedYear}-${selectedMonth}-${day}`));
+     const joined=normalizeDateToMidnight(new Date(joiningDate));
+    if (
+      selectedDate < joined
+      
+    ) {
+      alert(
+        `Selected date is before the ${employeeData.name}'s  joining date : ${joiningDateStr}!`
+      );
+    } else {
         // Open the modal if the selected date is after or equal to the joining date
         setModalOpen(true);
       }
@@ -238,6 +249,10 @@ const calculateTotalValue = () => {
   const handleProgressSubmit = async () => {
     try {
       // Assuming you have a unique identifier 'id' and other data
+      if (addSizeno === "" || addQuantity === "") {
+        alert("Please enter all details");
+        return; // Prevent form submission
+    }
 
       const data = {
         day: addDay,
@@ -249,16 +264,22 @@ const calculateTotalValue = () => {
         quantity: addQuantity,
       };
 
+      
+    
+
       const response = await axios.post(
         `http://localhost:8081/submitProgress/${id}`,
         data
       );
 
       // Handle success, maybe close the modal or perform additional actions
-      console.log("Progress submitted successfully:", response);
+      
+
+      openModal(addDay);
 
       // Close the modal or perform any other actions as needed
-      setModalOpen(false);
+      
+
       const fakeEvent = {
         preventDefault: () => {}, // Mocking preventDefault function
       };
@@ -384,7 +405,7 @@ const calculateTotalValue = () => {
   return (
     <div>
       <div className="view-stats-container">
-        <h3 style={{ textAlign: "center" }}>Track Progress</h3>
+        <h3 style={{ textAlign: "center",fontWeight:'500',fontFamily: 'Roboto, sans-serif'}}>Track Progress</h3>
 
         <form onSubmit={handleSubmit}>
           <div className="select-container">
@@ -431,19 +452,20 @@ const calculateTotalValue = () => {
           style={{
             textAlign: "center",
             marginTop: "30px",
-            fontStyle: "italic",
+            fontWeight:'500',
+            fontFamily: 'Roboto, sans-serif'
           }}
         >
           Progress Data for {employeeData.name}
         </h2>
-        <table className="attendance-table">
+        <table className="mark-table">
           <thead>
             <tr>
-              <th>Day</th>
-              <th>Month</th>
-              <th>Year</th>
-              <th>Status</th>
-              <th>Action</th>
+              <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif'}}>Day</th>
+              <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif'}}>Month</th>
+              <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif'}}>Year</th>
+              <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif'}}>Status</th>
+              <th style={{fontSize:'21px',fontFamily: 'Open Sans, sans-serif'}}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -453,21 +475,21 @@ const calculateTotalValue = () => {
 
               return (
                 <tr key={day}>
-                  <td>{record ? record.day : day}</td>
-                  <td>{record ? record.month : selectedMonth}</td>
-                  <td>{record ? record.year : selectedYear}</td>
-                  <td>
+                  <td style={{fontSize:'18px',fontFamily: 'Roboto, sans-serif'}}>{record ? record.day : day}</td>
+                  <td style={{fontFamily: 'Roboto, sans-serif',fontSize:'19px'}}>{record ? record.month : selectedMonth}</td>
+                  <td style={{fontFamily: 'Roboto, sans-serif',fontSize:'19px'}}>{record ? record.year : selectedYear}</td>
+                  <td >
                     {record ? (
                       <button
                         className="btn btn-success"
-                        style={{ color: "white" }}
+                        style={{ color: "white" , fontSize:"17px"}}
                         onClick={() => openViewModal(day)}
                       >
                         View
                       </button>
                     ) : (
-                      <span style={{ fontWeight: "bold", color: "black" }}>
-                        Not Marked
+                      <span style={{fontFamily: 'Roboto, sans-serif', color: 'black',fontSize:'20px' }}>
+                        not-marked
                       </span>
                     )}
                   </td>
@@ -477,16 +499,17 @@ const calculateTotalValue = () => {
                         <button
                           className="btn btn-warning"
                           style={{
-                            backgroundColor: "#1565C0",
+                            backgroundColor: "#ff3333",
                             color: "white",
-                            border: "1px solid #1565C0",
+                            border: "1px solid #ff3333",
                             transition: "background-color 0.3s",
+                            fontSize:"17px"
                           }}
                           onMouseOver={(e) =>
-                            (e.target.style.backgroundColor = "#42A5F5")
+                            (e.target.style.backgroundColor = " #ff6666")
                           }
                           onMouseOut={(e) =>
-                            (e.target.style.backgroundColor = "#1565C0")
+                            (e.target.style.backgroundColor = "#ff3333")
                           }
                           onClick={() => openModal(day)}
                         >
@@ -499,16 +522,17 @@ const calculateTotalValue = () => {
                         <button
                           className="btn btn-warning"
                           style={{
-                            backgroundColor: "#1565C0",
+                            backgroundColor: "#ff3333",
                             color: "white",
-                            border: "1px solid #1565C0",
+                            border: "1px solid #ff3333",
                             transition: "background-color 0.3s",
+                            fontSize:"17px"
                           }}
                           onMouseOver={(e) =>
-                            (e.target.style.backgroundColor = "#42A5F5")
+                            (e.target.style.backgroundColor = " #ff6666")
                           }
                           onMouseOut={(e) =>
-                            (e.target.style.backgroundColor = "#1565C0")
+                            (e.target.style.backgroundColor = "#ff3333")
                           }
                           onClick={() => openModal(day)}
                         >
@@ -612,7 +636,7 @@ const calculateTotalValue = () => {
                   </span>
 
                   <div className="progress-data-container">
-                    <h6 style={{ fontWeight: "bold", color: "red" }}>
+                    <h6 style={{ fontWeight: "bold", color: "red",fontFamily:'Roboto, sans-serif' }}>
                       {employeeData.name} Progress -{" "}
                       {progressDayData.length > 0 &&
                         formatDate(
@@ -625,22 +649,22 @@ const calculateTotalValue = () => {
                     <table className="table">
                       <thead>
                         <tr>
-                          <th>Serial Number</th>
-                          <th>Size Number</th>
-                          <th>Quantity(in kg)</th>
-                          <th>Value</th>
-                          <th>Packed By</th>
-                          <th>Actions</th>
+                          <th style={{fontFamily:'Roboto, sans-serif'}}>Serial Number</th>
+                          <th  style={{fontFamily:'Roboto, sans-serif'}}>Size Number</th>
+                          <th style={{fontFamily:'Roboto, sans-serif'}}>Quantity(in kg)</th>
+                          <th style={{fontFamily:'Roboto, sans-serif'}}>Value</th>
+                          <th style={{fontFamily:'Roboto, sans-serif'}}>Packed By</th>
+                          <th style={{fontFamily:'Roboto, sans-serif'}}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {progressDayData.map((record, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td style={{fontSize:'18px'}}>{record.sizeno}</td>
-                            <td style={{fontSize:'18px'}}>{record.quantity}</td>
-                            <td style={{fontSize:'18px'}}>{record.value}</td>
-                            <td style={{fontSize:'18px'}}>{record.packed}</td>
+                            <td style={{fontSize:'18px',fontFamily:'Roboto, sans-serif'}}>{record.sizeno}</td>
+                            <td style={{fontSize:'18px',fontFamily:'Roboto, sans-serif'}}>{record.quantity}</td>
+                            <td style={{fontSize:'18px',fontFamily:'Roboto, sans-serif'}}>{record.value}</td>
+                            <td style={{fontSize:'18px',fontFamily:'Roboto, sans-serif'}}>{record.packed}</td>
                             <td>
             <button type="button" className="btn btn-primary mr-1" style={{fontSize:'14px'}} onClick={() => handleEdit(record)}>
                 <i className="bi bi-pencil-fill bi-sm"></i>
@@ -655,7 +679,7 @@ const calculateTotalValue = () => {
                         {/* Total row */}
                         <tr>
                           <td colSpan="2">
-                            <b>Total</b>
+                            <b style={{fontSize:'18px',fontFamily:'Roboto, sans-serif'}}>Total</b>
                           </td>
                           <td style={{fontSize:'18px'}}>
                             <b>{calculateTotalQuantity()} kg</b>

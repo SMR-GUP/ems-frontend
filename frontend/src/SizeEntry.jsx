@@ -107,13 +107,34 @@ function SizeEntry(){
     return (
         <div className='size-table mt-3 mx-auto'>
 <div className=' d-flex justify-content-center mt-3' >
-            <h3  style={{ marginTop: '30px' ,marginBottom:'30px'}}> List of Sizes</h3>
+            <h3 style={{marginTop:'25px',marginBottom:'25px',fontFamily: 'Open Sans, sans-serif',fontSize:'30px', textDecoration: 'underline',color:'black'}}> List of Sizes</h3>
 
-        </div>        
-        <button className="btn btn-warning" style={{ marginLeft:'90px',marginBottom:'20px',backgroundColor: '#1565C0', color: 'white', border: '1px solid #1565C0', transition: 'background-color 0.3s' }} 
-          onMouseOver={(e) => e.target.style.backgroundColor='#42A5F5'}
-          onMouseOut={(e) => e.target.style.backgroundColor='#1565C0'}
-          onClick={() => openModal()}>New Size Entry</button>
+        </div>    
+
+      
+
+<button 
+  className="btn btn-warning" 
+  style={{ 
+    marginLeft: '60px',
+    backgroundColor: '#1565C0',
+    color: 'white',
+    border: '1px solid #1565C0',
+    transition: 'background-color 0.3s',
+    display: 'flex',
+    alignItems: 'center' // Center the icon and text vertically
+  }} 
+  onMouseOver={(e) => {
+    e.target.style.backgroundColor = "#6666ff"; // Change background color to lighter shade of violet on hover
+    e.target.style.borderColor = "#1565C0";
+     // Change border color to lighter shade of violet on hover
+  }}
+  onMouseOut={(e) => e.target.style.backgroundColor='#1565C0'}
+  onClick={() => openModal()}
+>
+  <i style={{fontSize:'19px'}} className="bi bi-plus-circle me-2"></i> {/* Icon */}
+  <span  className="fs-5">New Size Entry</span>
+</button>
 
 {isModalOpen && (
         <div className="progress-modal-overlay">
@@ -155,6 +176,8 @@ function SizeEntry(){
               value={sizeName}
               onChange={(e) => setSizeName(e.target.value)}
               placeholder="Enter alphanumeric text"
+              autoComplete='off'
+
             />
             <label htmlFor="sizeValue">Size Code:</label>
             <input
@@ -164,6 +187,8 @@ function SizeEntry(){
               onChange={(e) => setSizeValue(e.target.value)}
               step="0.01"
               placeholder="Enter decimal value"
+              autoComplete='off'
+
             />
             <div className="progress-button-container">
               <button className="progress-add-button" onClick={editSizeEntry}>Edit Size Entry</button>
@@ -173,24 +198,26 @@ function SizeEntry(){
         </div>
       )}
 
+<div className='px-5 py-3'>
+<div className='mt-2' style={{ textAlign: 'center' }}>
 
-        <table className='table' style={{ textAlign: 'center' }}>
+        <table className='attendance-table' style={{ marginLeft:'10px', marginRight:'10px',textAlign: 'center',tableLayout: 'fixed' }}>
           <thead>
             <tr>
-              <th>Serial Number</th>
-              <th>Size Number</th>
-              <th>Size Code</th>
-              <th>Actions</th>
+              <th style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Serial Number</th>
+              <th style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Size Number</th>
+              <th style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Size Code</th>
+              <th style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {sizes.map((size, index) => (
               <tr key={index}>
-                <td style={{color:'blue',fontSize:'20px'}}>{index + 1}</td>
-                <td style={{color:'black',fontSize:'20px'}}>{size.sizeno}</td>
-                <td style={{color:'black',fontSize:'20px'}}>{size.sizecode}</td>
+                <td style={{color:'blue',fontSize:'21px',fontFamily: 'Roboto, sans-serif'}}>{index + 1}</td>
+                <td style={{color:'black',fontSize:'21px',fontFamily: 'Roboto, sans-serif'}}>{size.sizeno}</td>
+                <td style={{color:'black',fontSize:'21px',fontFamily: 'Roboto, sans-serif'}}>{size.sizecode}</td>
                 <td>
-                  <button className='btn btn-success' onClick={() => openEditModal(size)}>Edit</button>
+                  <button className='btn btn-success'  onClick={() => openEditModal(size)} >Edit</button>
  
                   <button className='btn btn-danger' style={{marginLeft:'5px'}} onClick={() => handleDelete(size)}>Delete</button>
                 </td>
@@ -198,6 +225,8 @@ function SizeEntry(){
             ))}
           </tbody>
         </table>
+      </div>
+      </div>
       </div>
       );
 

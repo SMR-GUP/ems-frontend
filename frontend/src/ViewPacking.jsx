@@ -138,7 +138,7 @@ function ViewPacking() {
   return (
     <div>
       <div className="view-stats-container">
-        <h3 style={{ textAlign: "center" }}>View Packing</h3>
+        <h3 style={{ textAlign: "center",fontFamily: "Roboto, sans-serif",fontWeight:"500" }}>View Packing</h3>
 
         <form onSubmit={handleSubmit}>
           <div className="select-container">
@@ -184,19 +184,19 @@ function ViewPacking() {
           className="table-header"
           style={{
             textAlign: "center",
-            marginTop: "30px",
-            fontStyle: "italic",
+            marginTop: "35px",
+            fontFamily: "Roboto, sans-serif"
           }}
         >
-          Attendance Data for {employeeData.name}
+          Packing Data for {employeeData.name}
         </h2>
-        <table className="attendance-table">
+        <table className="mark-table">
           <thead>
             <tr>
-              <th>Day</th>
-              <th>Month</th>
-              <th>Year</th>
-              <th>Status</th>
+              <th style={{fontFamily: "Roboto, sans-serif",fontSize:"21px"}}>Day</th>
+              <th style={{fontFamily: "Roboto, sans-serif",fontSize:"21px"}}>Month</th>
+              <th style={{fontFamily: "Roboto, sans-serif",fontSize:"21px"}}>Year</th>
+              <th style={{fontFamily: "Roboto, sans-serif",fontSize:"21px"}}>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -205,12 +205,12 @@ function ViewPacking() {
                 const record = packingData.find((record) => record.day === day);
                 return (
                   <tr key={day}>
-                    <td>{record ? record.day : day}</td>
-                    <td>{record ? record.month : selectedMonth}</td>
-                    <td>{record ? record.year : selectedYear}</td>
+                    <td style={{fontFamily: "Roboto, sans-serif",fontSize:"19px"}}>{record ? record.day : day}</td>
+                    <td style={{fontFamily: "Roboto, sans-serif",fontSize:"19px"}}>{record ? record.month : selectedMonth}</td>
+                    <td style={{fontFamily: "Roboto, sans-serif",fontSize:"19px"}}>{record ? record.year : selectedYear}</td>
                     <td>
                       {!record ? (
-                        <span style={{ color: "blue", fontWeight: "bold" }}>
+                        <span style={{ color: "blue", fontFamily: "Roboto, sans-serif",fontSize:"17px",fontWeight:"bold"}}>
                           No packing history
                         </span>
                       ) : (
@@ -220,6 +220,7 @@ function ViewPacking() {
                             color: "white",
                             backgroundColor: "black",
                             borderColor: "black",
+                            fontSize:"16px",
                             transition:
                               "background-color 0.3s, border-color 0.3s, color 0.3s", // Smooth transition
                           }}
@@ -243,37 +244,7 @@ function ViewPacking() {
               }
             )}
 
-            {/* 
-{isViewModalOpen && (
-  <div className="progress-modal-overlay">
-    <div className="progress-modal-content">
-      <span className="progress-close" onClick={closeViewModal}>&times;</span>
-
-      <div className="progress-data-container">
-
-        {dayPacking.map((record, index) => (
-          <div key={index}>
-                  <h6 style={{ fontWeight: 'bold', color: 'red' }}>{employeeData.name} Packing Data - {record.day}/{record.month}/{record.year}</h6>
-
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Serial Number:</span> <span style={{ fontWeight: 'bold', color: 'blue' }}>{index+1}</span></p>
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Size Number:</span> <span style={{ fontWeight: 'bold', color: 'green' }}>{record.sizeno}</span></p>
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Quantity:</span> <span style={{ fontWeight: 'bold', color: 'green' }}>{record.quantity}</span></p>
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Value:</span> <span style={{ fontWeight: 'bold', color: 'green' }}>{record.value}</span></p>
-            <p><span style={{ fontWeight: 'bold', color: 'black' }}>Packed By:</span> <span style={{ fontWeight: 'bold', color: 'green' }}>{record.packed}</span></p>
-            <br></br>
-            <hr style={{ border: '1px solid #888', margin: '10px 0' }} />
-
-            <br></br>
-
-          </div>
-        ))}
-        <div className="progress-button-container">
-          <button className="progress-cancel-button" onClick={closeViewModal}>Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}  */}
+         
 
             {isViewModalOpen && (
               <div className="progress-modal-overlay">
@@ -283,7 +254,7 @@ function ViewPacking() {
                   </span>
 
                   <div className="progress-data-container">
-                    <h6 style={{ fontWeight: "bold", color: "red" }}>
+                    <h6 style={{ fontSize:"16px",fontWeight: "bold", color: "red" ,fontFamily:"Roboto, sans-serif"}}>
                       {employeeData.name} Packing -{" "}
                       {dayPacking.length > 0 &&
                         formatDate(
@@ -296,21 +267,21 @@ function ViewPacking() {
                     <table className="table">
                       <thead>
                         <tr>
-                          <th>Serial Number</th>
-                          <th>Size Number</th>
-                          <th>Quantity(in kg)</th>
-                          <th>Value</th>
-                          <th>Manufactured By</th>
+                          <th style={{fontFamily:"Roboto, sans-serif"}}>Serial Number</th>
+                          <th style={{fontFamily:"Roboto, sans-serif"}}>Size Number</th>
+                          <th style={{fontFamily:"Roboto, sans-serif"}}>Quantity(in kg)</th>
+                          <th style={{fontFamily:"Roboto, sans-serif"}}>Value</th>
+                          <th style={{fontFamily:"Roboto, sans-serif"}}>Manufactured By</th>
                         </tr>
                       </thead>
                       <tbody>
                         {dayPacking.map((record, index) => (
                           <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{record.sizeno}</td>
-                            <td>{record.quantity}</td>
-                            <td>{record.value}</td>
-                            <td>
+                            <td style={{fontFamily:"Roboto, sans-serif"}}>{index + 1}</td>
+                            <td style={{fontFamily:"Roboto, sans-serif"}}>{record.sizeno}</td>
+                            <td style={{fontFamily:"Roboto, sans-serif"}}>{record.quantity}</td>
+                            <td style={{fontFamily:"Roboto, sans-serif"}}>{record.value}</td>
+                            <td style={{fontFamily:"Roboto, sans-serif"}}>
                               {
                                 data.find(
                                   (employee) => employee._id === record.emp_id.toString()
@@ -323,13 +294,13 @@ function ViewPacking() {
                         {/* Total row */}
                         <tr>
                           <td colSpan="2">
-                            <b>Total</b>
+                            <b style={{fontFamily:"Roboto, sans-serif"}}>Total</b>
                           </td>
                           <td>
-                            <b>{calculateTotalQuantity()} kg</b>
+                            <b style={{fontFamily:"Roboto, sans-serif"}}>{calculateTotalQuantity()} kg</b>
                           </td>
                           <td>
-                            <b>{calculateTotalValue()}</b>
+                            <b style={{fontFamily:"Roboto, sans-serif"}}>{calculateTotalValue()}</b>
                           </td>
                           <td></td>
                         </tr>

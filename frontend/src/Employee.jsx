@@ -4,6 +4,8 @@ import axios from 'axios'
 import './style.css'
 
 
+
+
 function Employee() {
 
 
@@ -41,20 +43,30 @@ function Employee() {
   return (
     <div className='px-5 py-3'>
         <div className=' d-flex justify-content-center mt-3' >
-            <h2>Employee List</h2>
+            <h2 style={{fontFamily: 'Open Sans, sans-serif',fontSize:'30px', textDecoration: 'underline',color:'black',marginBottom:'35px'}}>Employee List</h2>
         </div>
-        <Link to="/create" className='btn btn-success'>
-            Add Employee
-        </Link>
+      
+
+<Link to="/create" className='btn btn-success btn-lg' 
+style={{marginLeft:'1px'}}>
+    <i style={{fontSize:'19px'}} className="bi bi-person-fill-add me-2"></i>
+    <span  className="fs-5">Add Employee</span>
+</Link>
+
+
+<br></br>
+
+     
+
         <div className='mt-3'>
-        <table className='table' style={{ textAlign: 'center' }}>
+        <table className='attendance-table' style={{textAlign: 'center' }}>
             <thead>
                 <tr>
-                    <th>Name </th>
-                    <th>Joining Date </th>
-                    <th>Day </th>
-                    <th>Salary </th>
-                    <th>Actions</th>
+                    <th  style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Name </th>
+                    <th  style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Joining Date </th>
+                    <th  style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Day </th>
+                    <th  style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Salary </th>
+                    <th  style={{color:'black',fontSize:'19px',fontFamily: 'Open Sans, sans-serif'}}>Actions</th>
 
                 </tr>
             </thead>
@@ -63,29 +75,30 @@ function Employee() {
     const formattedDate = new Date(employee.date).toLocaleDateString();
     return (
             <tr key={index}>
-                <td>{employee.name}</td>
-               <td>{new Date(formattedDate).toLocaleDateString('en-GB')}</td>
-               <td>{employee.day}</td>
-                <td>{employee.salary}</td>
+                <td style={{color:'black',fontSize:'19px',fontFamily: 'Roboto, sans-serif'}}>{employee.name}</td>
+               <td style={{color:'black',fontSize:'19px',fontFamily: 'Roboto, sans-serif'}}>{new Date(formattedDate).toLocaleDateString('en-GB')}</td>
+               <td style={{color:'black',fontSize:'19px',fontFamily: 'Roboto, sans-serif'}}>{employee.day}</td>
+                <td style={{color:'black',fontSize:'19px',fontFamily: 'Roboto, sans-serif'}}>{employee.salary}</td>
                 {/* <td>{
                     <img src={`http://localhost:8081/images/`+employee.image } alt="" className='employee_image'/>
                     }</td> */}
-                <td>
+                <td style={{color:'black',fontSize:'19px',fontFamily: 'Roboto, sans-serif'}}>
+                    <button  className="btn btn-primary mr-1"> 
                 <Link 
   to={`/employeeEdit/${employee._id}`} 
-  className='btn btn-sm btn-info mr-5' 
+  className='bi bi-pencil-fill' 
+
   style={{
-    color:'white',
-    border:'blue',
-    backgroundColor:'blue',
-    transition: 'background-color 0.3s' // Add transition for smooth effect
+     color:'white'
   }}
-  onMouseEnter={e => e.target.style.backgroundColor = 'darkblue'} // Change color on hover
-  onMouseLeave={e => e.target.style.backgroundColor = 'blue'} // Revert to original color on hover out
 >
-  Edit
+  
 </Link>
-        <button onClick={e => handleDelete(employee._id)} className='btn btn-sm btn-danger ' style={{marginLeft:'5px'}}>Delete</button>
+</button>
+
+<button type="button" className="btn btn-danger" style={{marginLeft:'15px'}} onClick={e => handleDelete(employee._id)}>
+                <i className="bi bi-trash-fill bi-sm"></i>
+            </button>
                 </td>
             </tr>
         );

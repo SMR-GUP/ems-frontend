@@ -27,7 +27,7 @@
   
   .edit-employee-label {
     margin-bottom: 5px;
-    color: #0933f0; /* Blue label text */
+    color: black; /* Blue label text */
     font-weight: bold;
     width: 100%; /* Make the button width 100% */
 
@@ -37,7 +37,6 @@
   .edit-employee-select {
     padding: 8px;
     margin-bottom: 10px;
-    border: 1px solid #020202; /* Blue border for input fields */
     border-radius: 4px;
   }
   

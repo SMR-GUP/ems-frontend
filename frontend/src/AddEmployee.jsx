@@ -56,9 +56,21 @@ function AddEmployee() {
       event.preventDefault();
   
       if (!data.name  || !data.weekday || !data.joiningDate) {
-          alert("Please enter all the details to add the employee");
+          alert("Please enter all the details to add the employee..!");
           return; 
       }
+
+      var today = new Date();
+var providedDate = new Date(data.joiningDate);
+var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+
+
+if (providedDate > today) {
+  var formattedToday = today.toLocaleDateString('en-GB', options);
+  alert("Joining Date cannot be ahead of " + formattedToday + "!");
+    return;
+}
+
       console.log("Dataaa  ",data);
         axios.post('http://localhost:8081/create', data)
           .then(res => {
@@ -71,15 +83,15 @@ function AddEmployee() {
 
   return (
     <div className='d-flex flex-column align-items-center pt-2 mt-3'>
-    <h3>Add Employee</h3>
+    <h3 style={{color:'black',fontFamily:'Open Sans, sans-serif'}}>Add Employee</h3>
     <form class="row g-3 w-50" onSubmit={handleSubmit}>
     <div class="col-12">
-            <label for="inputName" class="form-label">Name</label>
+            <label for="inputName" class="form-label" style={{fontSize:'18px',color:'black',fontFamily:'Open Sans, sans-serif'}}>Name</label>
             <input type="text" class="form-control" id="inputName" placeholder='Enter Name' autoComplete='off'
              onChange={e=>setData({...data,name:e.target.value})}/>
         </div>
         <div className="col-12">
-          <label htmlFor="inputJoiningDate" className="form-label p-2" autoComplete='off'>Date of Joining</label>
+          <label htmlFor="inputJoiningDate" className="form-label p-2" autoComplete='off' style={{fontSize:'18px',color:'black',fontFamily:'Open Sans, sans-serif'}}>Date of Joining</label>
           <DatePicker
             selected={joiningDate}
             onChange={handleDateChange}
@@ -91,7 +103,7 @@ function AddEmployee() {
             />
         </div>
         <div className="col-12">
-          <label className="form-label">Weekday</label>
+          <label className="form-label" style={{fontSize:'18px',color:'black',fontFamily:'Open Sans, sans-serif'}}>Weekday</label>
           <input
             type="text"
             className="form-control"
@@ -100,7 +112,7 @@ function AddEmployee() {
           />
         </div>
         <div class="col-12">
-            <label for="inputSalary" class="form-label">Salary</label>
+            <label for="inputSalary" class="form-label" style={{fontSize:'18px',color:'black',fontFamily:'Open Sans, sans-serif'}}>Salary</label>
             <input type="text" class="form-control" id="inputSalary" placeholder="Enter Salary" autoComplete='off' 
             onChange={e=>setData({...data,salary:e.target.value})}/>
         </div>
@@ -112,7 +124,7 @@ function AddEmployee() {
         </div> */}
         
         <div class="col-12">
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary" style={{width:'100%'}}>Create</button>
         </div>
     </form>
 </div>
