@@ -180,8 +180,12 @@ const handleSubmit = async (e) => {
 
               totQuantity+=parseFloat(totalQuantity);
               totValue+=parseFloat(totalValue);
+              if (totalQuantity === 0 && totalValue === 0) {
+                // If totalQuantity and totalValue are both zero, skip rendering this table row
+                return null;
+            }
 
-              return (
+              return ( 
                 <tr key={day}>
                   <td style={{fontSize:'18px',fontFamily: 'Roboto, sans-serif', width: '10%'}}>{ day}</td>
                   <td style={{fontFamily: 'Roboto, sans-serif',fontSize:'19px', width: '20%'}}>{selectedMonth}</td>

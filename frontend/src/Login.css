@@ -1,67 +1,29 @@
-/* Add this CSS to your existing styles or in a <style> tag */
-
-.login-container {
-  background-image: url('https://wallpapers.com/images/hd/candles-in-a-snowy-place-rkr2faj0xmefzxab.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  overflow: hidden;
+.login-page {
+  display: flex;
+  height: 100vh;
 }
 
-  
-  .loginForm {
-    background-color: rgba(0, 0, 0, 0.4);
-    margin-right: 760px;
-    width:100%;
-    margin-left: 20px;
+.login-container {
+  width: 100%;
+  max-width: 1500px; /* Adjust this as needed */
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-image: linear-gradient(
+    to bottom,
+    #f8e4c3,
+    /* Orange */ #f5b1a5,
+    /* Pink */ #f0c69f,
+    /* Blue */ #f5cf9e,
+    /* Purple */ #f3f186
+  );
+}
 
-   
-  }
-  
-  .loginForm h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .loginForm form {
-    padding: 20px;
-    
-  }
-  
-  .loginForm label {
-    font-weight: bold;
-    
-  }
-  
-  .loginForm input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #f4f3f5;
-    border-radius: 3px;
-    box-sizing: border-box;
-  }
-  
-  .loginForm button {
-    padding: 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 0;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .loginForm button:hover {
-    background-color: #218838;
-  }
+.login-form {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+}
 
-  
-  
-  .loginForm p {
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
+/* Additional styling for the image (if needed) */
