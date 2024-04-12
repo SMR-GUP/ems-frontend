@@ -15,6 +15,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.static('public'));
 
+
 // MongoDB Connection
 const connectionString = 'mongodb+srv://smritig395:SMR2001@cluster0.m3ajeuh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const client = new MongoClient(connectionString);
