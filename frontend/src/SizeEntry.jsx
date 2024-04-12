@@ -38,7 +38,7 @@ function SizeEntry(){
       };
     
       const addSizeEntry = () => {
-        axios.post('http://localhost:8081/addsize', {
+        axios.post('https://puffy-burst-production.up.railway.app/addsize', {
           sizeno: sizeName,
           sizecode: sizeValue,
         })
@@ -52,7 +52,7 @@ function SizeEntry(){
       };
 
       const editSizeEntry = () => {
-        axios.put(`http://localhost:8081/updateSizeEntry/${selectedSize._id}`, {
+        axios.put(`https://puffy-burst-production.up.railway.app/updateSizeEntry/${selectedSize._id}`, {
           sizeno: sizeName,
           sizecode: sizeValue,
         })
@@ -75,7 +75,7 @@ function SizeEntry(){
     
         if (isConfirmed) {
           // If user confirms, proceed with deletion
-          axios.delete(`http://localhost:8081/deleteSizeEntry/${size._id}`)
+          axios.delete(`https://puffy-burst-production.up.railway.app/deleteSizeEntry/${size._id}`)
             .then(response => {
               console.log('Server Response:', response.data);
               window.location.reload();
@@ -92,7 +92,7 @@ function SizeEntry(){
     const [sizes, setSizes] = useState([]);
     useEffect(() => {
         // Fetch sizes data using Axios
-        axios.get('http://localhost:8081/getSizes')
+        axios.get('https://puffy-burst-production.up.railway.app/getSizes')
           .then(response => {
             setSizes(response.data.Result);
             console.log("sizess  data   ",sizes);
